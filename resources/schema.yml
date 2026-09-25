@@ -1,0 +1,9 @@
+resources:
+  schemas:
+    bids_demo_schema:
+      catalog_name: ${var.catalog}
+      name: ${var.schema}
+    # Home for the UC -> Lakebase synced reference tables (mirrors into Postgres schema bids_ref).
+    bids_ref_schema:
+      catalog_name: ${var.catalog}
+      name: bids_ref

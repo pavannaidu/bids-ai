@@ -1,0 +1,83 @@
+resources:
+  jobs:
+    seed_demo_data:
+      name: "[${bundle.target}] Bids Seed Demo Data"
+      environments:
+        - environment_key: bootstrap_env
+          spec:
+            client: "4"
+            dependencies:
+              - reportlab
+              - openpyxl
+              - python-docx
+      tasks:
+        - task_key: seed_demo_tables
+          environment_key: bootstrap_env
+          spark_python_task:
+            python_file: ../src/bootstrap/seed_demo_data.py
+            parameters:
+              - --catalog
+              - ${var.catalog}
+              - --schema
+              - ${var.schema}
+              - --volume
+              - ${var.bid_documents_volume}
+      permissions:
+        - level: CAN_MANAGE
+          group_name: ${var.demo_owner_group}
+
+    build_vector_search_index:
+      name: "[${bundle.target}] Bids Build Vector Search Index"
+      environments:
+        - environment_key: bootstrap_env
+          spec:
+            client: "4"
+            dependencies:
+              - databricks-vectorsearch
+      tasks:
+        - task_key: build_index
+          environment_key: bootstrap_env
+          spark_python_task:
+            python_file: ../src/bootstrap/build_vector_search_index.py
+            parameters:
+              - --catalog
+              - ${var.catalog}
+              - --schema
+              - ${var.schema}
+              - --endpoint-name
+              - ${var.vector_search_endpoint}
+              - --warehouse-id
+              - ${var.warehouse_id}
+      permissions:
+        - level: CAN_MANAGE
+          group_name: ${var.demo_owner_group}
+
+    grant_app_access:
+      name: "[${bundle.target}] Bids Grant App Access"
+      environments:
+        - environment_key: bootstrap_env
+          spec:
+            client: "4"
+            dependencies:
+              - psycopg[binary]
+      tasks:
+        - task_key: grant_permissions
+          environment_key: bootstrap_env
+          spark_python_task:
+            python_file: ../src/bootstrap/grant_app_access.py
+            parameters:
+              - --catalog
+              - ${var.catalog}
+              - --schema
+              - ${var.schema}
+              - --volume
+              - ${var.bid_documents_volume}
+              - --app-client-id
+              - ${resources.apps.bids_demo_app.service_principal_client_id}
+              - --lakebase-instance
+              - ${var.lakebase_instance}
+              - --lakebase-database
+              - ${var.lakebase_database}
+      permissions:
+        - level: CAN_MANAGE
+          group_name: ${var.demo_owner_group}

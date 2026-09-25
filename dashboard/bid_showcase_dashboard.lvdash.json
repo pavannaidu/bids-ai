@@ -1,0 +1,388 @@
+{
+  "datasets": [
+    {
+      "name": "match_rate_comparison",
+      "displayName": "Match Rate Comparison (illustrative \u2014 legacy/CAT per BRD; Databricks AI is this showcase's target)",
+      "queryLines": [
+        "SELECT 'Legacy tool' AS approach, 5.0 AS match_rate_pct, 1 AS sort_order UNION ALL SELECT 'CAT tool (code given only)', 50.0, 2 UNION ALL SELECT 'Databricks AI (this showcase)', 90.0, 3"
+      ]
+    },
+    {
+      "name": "prep_time_trend",
+      "displayName": "Proposal Prep Time Trend (illustrative \u2014 toward the BRD's <3hr target)",
+      "queryLines": [
+        "SELECT 'Week 1' AS week_label, 8.0 AS avg_prep_hours, 1 AS sort_order UNION ALL SELECT 'Week 2', 6.8, 2 UNION ALL SELECT 'Week 3', 5.4, 3 UNION ALL SELECT 'Week 4', 4.2, 4 UNION ALL SELECT 'Week 5', 3.3, 5 UNION ALL SELECT 'Week 6', 2.7, 6"
+      ]
+    },
+    {
+      "name": "on_time_trend",
+      "displayName": "On-Time Submission Rate Trend (illustrative \u2014 toward the BRD's 95% target)",
+      "queryLines": [
+        "SELECT 'Week 1' AS week_label, 61.0 AS on_time_pct, 1 AS sort_order UNION ALL SELECT 'Week 2', 70.0, 2 UNION ALL SELECT 'Week 3', 78.0, 3 UNION ALL SELECT 'Week 4', 85.0, 4 UNION ALL SELECT 'Week 5', 91.0, 5 UNION ALL SELECT 'Week 6', 96.0, 6"
+      ]
+    },
+    {
+      "name": "bid_outcomes_by_division",
+      "displayName": "Historical Bid Outcomes by Division",
+      "queryLines": [
+        "SELECT d.division_name, d.capacity_constrained, hb.outcome, hb.historical_bid_id FROM `pavan_naidu`.`bids_ai_demo_dev`.historical_bids hb JOIN `pavan_naidu`.`bids_ai_demo_dev`.divisions d ON hb.division_id = d.division_id"
+      ]
+    },
+    {
+      "name": "price_by_category",
+      "displayName": "Avg Submitted vs. List Price by Category",
+      "queryLines": [
+        "SELECT ic.category, 'Submitted price' AS metric, AVG(hb.submitted_price) AS avg_price FROM `pavan_naidu`.`bids_ai_demo_dev`.historical_bids hb JOIN `pavan_naidu`.`bids_ai_demo_dev`.item_catalog ic ON hb.item_code = ic.item_code GROUP BY ic.category UNION ALL SELECT ic.category, 'List price' AS metric, AVG(ic.list_price) AS avg_price FROM `pavan_naidu`.`bids_ai_demo_dev`.historical_bids hb JOIN `pavan_naidu`.`bids_ai_demo_dev`.item_catalog ic ON hb.item_code = ic.item_code GROUP BY ic.category"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "9da1bcdf",
+      "displayName": "Overview",
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layout": [
+        {
+          "widget": {
+            "name": "1dcef9d6",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "match_rate_comparison",
+                  "fields": [
+                    {
+                      "name": "approach",
+                      "expression": "`approach`"
+                    },
+                    {
+                      "name": "avg(match_rate_pct)",
+                      "expression": "AVG(`match_rate_pct`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "approach",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "approach"
+                },
+                "y": {
+                  "fieldName": "avg(match_rate_pct)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "AVG of match_rate_pct"
+                },
+                "label": {
+                  "show": true
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Item-Match Rate: Legacy vs. CAT Tool vs. Databricks AI"
+              },
+              "mark": {
+                "colors": [
+                  "#FF3621",
+                  "#FFAB00",
+                  "#00A972"
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 3,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "cb229fed",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "prep_time_trend",
+                  "fields": [
+                    {
+                      "name": "week_label",
+                      "expression": "`week_label`"
+                    },
+                    {
+                      "name": "avg(avg_prep_hours)",
+                      "expression": "AVG(`avg_prep_hours`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "week_label",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "week_label"
+                },
+                "y": {
+                  "fieldName": "avg(avg_prep_hours)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "AVG of avg_prep_hours"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Proposal Prep Time \u2014 Toward the <3hr Target"
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 0,
+            "width": 3,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "024e5511",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "on_time_trend",
+                  "fields": [
+                    {
+                      "name": "week_label",
+                      "expression": "`week_label`"
+                    },
+                    {
+                      "name": "avg(on_time_pct)",
+                      "expression": "AVG(`on_time_pct`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "week_label",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "week_label"
+                },
+                "y": {
+                  "fieldName": "avg(on_time_pct)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "AVG of on_time_pct"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "On-Time Submission Rate \u2014 Toward the 95% Target"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 4,
+            "width": 3,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "e927c117",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "bid_outcomes_by_division",
+                  "fields": [
+                    {
+                      "name": "division_name",
+                      "expression": "`division_name`"
+                    },
+                    {
+                      "name": "count(historical_bid_id)",
+                      "expression": "COUNT(`historical_bid_id`)"
+                    },
+                    {
+                      "name": "outcome",
+                      "expression": "`outcome`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "division_name",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "division_name"
+                },
+                "y": {
+                  "fieldName": "count(historical_bid_id)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "COUNT of historical_bid_id"
+                },
+                "label": {
+                  "show": true
+                },
+                "color": {
+                  "fieldName": "outcome",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "outcome"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Historical Bid Outcomes by Division (incl. capacity-constrained verticals)"
+              },
+              "mark": {
+                "colors": [
+                  "#FFAB00",
+                  "#00A972",
+                  "#FF3621",
+                  "#8BCAE7",
+                  "#AB4057",
+                  "#99DDB4",
+                  "#FCA4A1",
+                  "#919191",
+                  "#BF7080"
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 4,
+            "width": 3,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "91def10e",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "price_by_category",
+                  "fields": [
+                    {
+                      "name": "category",
+                      "expression": "`category`"
+                    },
+                    {
+                      "name": "avg(avg_price)",
+                      "expression": "AVG(`avg_price`)"
+                    },
+                    {
+                      "name": "metric",
+                      "expression": "`metric`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "category",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "category"
+                },
+                "y": {
+                  "fieldName": "avg(avg_price)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "AVG of avg_price"
+                },
+                "label": {
+                  "show": true
+                },
+                "color": {
+                  "fieldName": "metric",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "metric"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Avg Submitted Price vs. List Price by Category (margin signal)"
+              },
+              "mark": {
+                "colors": [
+                  "#FFAB00",
+                  "#00A972",
+                  "#FF3621",
+                  "#8BCAE7",
+                  "#AB4057",
+                  "#99DDB4",
+                  "#FCA4A1",
+                  "#919191",
+                  "#BF7080"
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 8,
+            "width": 6,
+            "height": 4
+          }
+        }
+      ]
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
+}

@@ -1,0 +1,35 @@
+command:
+  - "python"
+  - "app.py"
+
+env:
+  - name: BIDS_CATALOG
+    value: "pavan_naidu_catalog"
+  - name: BIDS_SCHEMA
+    value: "bids_ai_demo_dev"
+  - name: BIDS_VOLUME
+    value: "bid_documents"
+  - name: BIDS_WAREHOUSE_ID
+    value: "fb3b5c1dee0b9d55"
+  - name: BIDS_VECTOR_SEARCH_ENDPOINT
+    value: "bids_ai_vs_endpoint"
+  - name: BIDS_VECTOR_SEARCH_INDEX
+    value: "item_catalog_index"
+  # Hybrid combines BM25 keyword matches (including product codes) with ANN.
+  # Set to "ann" as a deployment-level rollback switch.
+  - name: BIDS_SEARCH_MODE
+    value: "hybrid"
+  # NOTE: this endpoint is used by the ai_query recovery path (ai_query needs
+  # batch inference). databricks-claude-sonnet-5 does NOT support batch inference
+  # (fails PERMISSION_DENIED "not supported for batch inference"), which silently
+  # sank requirements extraction. claude-sonnet-4-5 IS batch-capable (verified).
+  - name: BIDS_MODEL_SERVING_ENDPOINT
+    value: "databricks-claude-sonnet-4-5"
+  # Default extraction to ai_extract (structured, no external endpoint needed).
+  # The Settings pane can still switch to ai_query at runtime (process-local).
+  - name: BIDS_USE_AI_EXTRACT
+    value: "true"
+  - name: BIDS_MATCH_CONFIDENCE_THRESHOLD
+    value: "0.55"
+  - name: BIDS_LAKEBASE_INSTANCE
+    value: "dbdemosonlinestorepavannaidu"

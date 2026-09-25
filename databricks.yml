@@ -1,0 +1,68 @@
+bundle:
+  name: bids-ai-demo
+
+include:
+  - resources/*.yml
+
+workspace:
+  root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}
+  file_path: ${workspace.root_path}/files
+
+variables:
+  catalog:
+    description: Unity Catalog catalog that stores demo tables and documents.
+    default: pavan_naidu_catalog
+  schema:
+    description: Schema for Bids AI demo objects.
+    default: bids_ai_demo
+  bid_documents_volume:
+    description: Managed volume that stores sample incoming bid documents (PDF/XLSX) and uploads.
+    default: bid_documents
+  warehouse_id:
+    description: SQL warehouse used for ai_parse_document/ai_extract/ai_query and Vector Search sync.
+    default: fb3b5c1dee0b9d55
+  vector_search_endpoint:
+    description: Mosaic AI Vector Search endpoint backing item-catalog semantic search.
+    default: bids_ai_vs_endpoint
+  lakebase_instance:
+    description: Lakebase (managed Postgres) database instance backing bids + catalog reference data.
+    default: dbdemosonlinestorepavannaidu
+  lakebase_database:
+    description: Postgres database created inside the Lakebase instance.
+    default: bids_ai
+  jobs_spark_version:
+    description: Databricks Runtime used for bootstrap jobs.
+    default: 15.4.x-scala2.12
+  jobs_cluster_node_type:
+    description: Node type used for bootstrap jobs.
+    default: i3.xlarge
+  agent_prefix:
+    description: Prefix shared by demo agent/model-serving resources.
+    default: bids-ai
+  app_name_prefix:
+    description: Prefix for the Databricks App resource.
+    default: bids-ai-demo
+  demo_owner_group:
+    description: Group that can manage bundle jobs.
+    default: users
+  run_as_service_principal:
+    description: Optional service principal used for prod workflow run_as.
+    default: ""
+
+targets:
+  dev:
+    default: true
+    mode: development
+    workspace:
+      profile: FEVM
+    variables:
+      schema: bids_ai_demo_dev
+
+  prod:
+    mode: production
+    workspace:
+      profile: FEVM
+    variables:
+      schema: bids_ai_demo_prod
+    run_as:
+      service_principal_name: ${var.run_as_service_principal}

@@ -1,0 +1,12 @@
+resources:
+  apps:
+    bids_demo_app:
+      name: ${var.app_name_prefix}-${bundle.target}
+      description: Bids AI — document intelligence workbench.
+      source_code_path: ../src/app
+      resources:
+        - name: lakebase
+          database:
+            instance_name: ${var.lakebase_instance}
+            database_name: ${var.lakebase_database}
+            permission: CAN_CONNECT_AND_CREATE

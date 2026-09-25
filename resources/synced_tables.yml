@@ -1,0 +1,70 @@
+# Managed UC -> Lakebase (Postgres) synced tables. The app reads these from the
+# Postgres `bids_ref` schema over its existing psycopg connection, so item
+# matching/pricing lookups are fast and don't need a SQL Warehouse round trip.
+# Each source table is made sync-ready by seed_demo_data.py (PRIMARY KEY (id) + CDF).
+resources:
+  synced_database_tables:
+    ref_item_catalog:
+      name: ${resources.schemas.bids_ref_schema.id}.item_catalog
+      database_instance_name: ${var.lakebase_instance}
+      logical_database_name: ${var.lakebase_database}
+      spec:
+        source_table_full_name: ${var.catalog}.${var.schema}.item_catalog
+        primary_key_columns: [id]
+        scheduling_policy: SNAPSHOT
+        create_database_objects_if_missing: true
+        new_pipeline_spec:
+          storage_catalog: ${var.catalog}
+          storage_schema: ${var.schema}
+
+    ref_historical_bids:
+      name: ${resources.schemas.bids_ref_schema.id}.historical_bids
+      database_instance_name: ${var.lakebase_instance}
+      logical_database_name: ${var.lakebase_database}
+      spec:
+        source_table_full_name: ${var.catalog}.${var.schema}.historical_bids
+        primary_key_columns: [id]
+        scheduling_policy: SNAPSHOT
+        create_database_objects_if_missing: true
+        new_pipeline_spec:
+          storage_catalog: ${var.catalog}
+          storage_schema: ${var.schema}
+
+    ref_customer_purchase_history:
+      name: ${resources.schemas.bids_ref_schema.id}.customer_purchase_history
+      database_instance_name: ${var.lakebase_instance}
+      logical_database_name: ${var.lakebase_database}
+      spec:
+        source_table_full_name: ${var.catalog}.${var.schema}.customer_purchase_history
+        primary_key_columns: [id]
+        scheduling_policy: SNAPSHOT
+        create_database_objects_if_missing: true
+        new_pipeline_spec:
+          storage_catalog: ${var.catalog}
+          storage_schema: ${var.schema}
+
+    ref_customers:
+      name: ${resources.schemas.bids_ref_schema.id}.customers
+      database_instance_name: ${var.lakebase_instance}
+      logical_database_name: ${var.lakebase_database}
+      spec:
+        source_table_full_name: ${var.catalog}.${var.schema}.customers
+        primary_key_columns: [id]
+        scheduling_policy: SNAPSHOT
+        create_database_objects_if_missing: true
+        new_pipeline_spec:
+          storage_catalog: ${var.catalog}
+          storage_schema: ${var.schema}
+
+    ref_divisions:
+      name: ${resources.schemas.bids_ref_schema.id}.divisions
+      database_instance_name: ${var.lakebase_instance}
+      logical_database_name: ${var.lakebase_database}
+      spec:
+        source_table_full_name: ${var.catalog}.${var.schema}.divisions
+        primary_key_columns: [id]
+        scheduling_policy: SNAPSHOT
+        create_database_objects_if_missing: true
+        new_pipeline_spec:
+          storage_catalog: ${var.catalog}
+          storage_schema: ${var.schema}

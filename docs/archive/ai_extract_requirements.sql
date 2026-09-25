@@ -1,0 +1,38 @@
+SELECT ai_extract(
+  -- :content  → the FULL parsed document text (entire doc; not chunked/truncated)
+  '<<ENTIRE PARSED DOCUMENT TEXT — every page of the RFP as one string>>',
+
+  -- :schema   → _REQUIREMENTS_EXTRACT_SCHEMA (two fields per clause)
+  '{"requirements": {"type": "array", "items": {"type": "object", "properties": {"term_label": {"type": "string", "description": "A short name for the provision (e.g. ''Indemnification'', ''Payment Terms'')."}, "raw_text": {"type": "string", "description": "The clause text as written — quoted or closely paraphrased, not summarized."}}}}}',
+
+  options => map(
+    'version', '2.1',
+    -- :instructions → _REQUIREMENTS_EXTRACT_STEER  +  live matrix glossary
+    'instructions',
+    'This is a bid/RFP/solicitation for a medical and dental distributor. IGNORE the product line items (gloves, masks, syringes, etc.) — those are handled separately. Extract every distinct NON-product requirement, clause, term, condition, or certification the vendor would have to review or attest to. These include: legal terms (indemnification, IP infringement, power of attorney, debarment, litigation disclosure, anti-trust/non-collusion, Stark law / anti-kickback); commercial and pricing terms (payment terms, firm pricing, most favored nation / best price, delivery/FOB terms, rebates, administrative/marketing/transaction fees, piggyback/cooperative purchasing); compliance and HR items (E-Verify, affirmative action, criminal background, political contributions, anti-lobbying); insurance/coverage requirements; and tax provisions. This list is illustrative, not exhaustive — extract any other clause-like provision you find, even if it is not named above. Emit one entry per distinct provision; do not merge unrelated clauses or split a single clause into duplicates. term_label is a short name for the provision (e.g. ''Indemnification'', ''Payment Terms''); raw_text ten (quoted or closely paraphrased, not summarized).
+
+Common provisions to look for include (non-exhaustive — extract anything clausested here):
+- Does the company perform criminal backgrounds?: A vendor questionnaire QUESTION asking whether the company performs criminal background checks on its employees (an HR process
+question), not a requirement to run background checks.
+- Indemnification: The vendor must indemnify, defend, or hold the buyer harmless from claims, losses, damages, or liabilities. Includes hold-harmless and defense obligations.
+- IP Infringement: Warranties or obligations regarding intellectual-property, pight infringement — that goods do not infringe and the vendor will defendinfringement claims.
+- Power of Attorney: A clause requiring the vendor to grant a power of attorneyding legal authority to act on its behalf.
+- Debarment: A certification that the vendor is not debarred, suspended, or excluded from federal or state contracting or from participation in government programs.                - Litigation: A requirement to disclose pending or threatened litigation, lawsu material disputes involving the vendor.
+- Anti-Trust Violations: An anti-trust or non-collusion certification — that the bid was prepared independently, without collusion, price-fixing, or bid-rigging with competitors.  Includes certificates of independent price determination.
+- Stark Law Violations: Provisions invoking the federal physician self-referral (Stark) law or the Anti-Kickback Statute — prohibiting improper remuneration, kickbacks, or self-refin healthcare.
+- Criminal Background Investigation: A REQUIREMENT that the vendor conduct criminal background investigations or checks on personnel assigned to the contract (a mandated obligationa questionnaire question).
+- Anti-Lobbying: An anti-lobbying certification (e.g. the Byrd Amendment) — that appropriated federal funds were not used to lobby for the award.                                   - Most Favored Nation: A most-favored-nation, most-favored-customer, or best-prs offered are no less favorable than those given to any other customer.
+- Payment Terms: The payment terms / timing — e.g. Net 30/45/60 days from invoice or receipt, and any early-payment discount.                                                       - Payment Method: The method or mechanism of payment — electronic funds transfecard), check, or credit card acceptance.
+- Firm Pricing: A requirement that prices remain firm / fixed for a stated period or the contract term (firm-fixed pricing, no increases).                                          - Price Reduction: A price-reduction clause requiring the vendor to pass throug lower prices during the term.
+- Firm Markup (GPO): A fixed or firm markup / cost-plus percentage over cost applied to the covered lines (common in GPO contracts).                                                - Warranty of Products: A product warranty — that goods are free from defects ip, are merchantable/fit for purpose, and will be repaired or replaced ifdefective.                                                                                                                                                                          - Delivery Terms (FOB): Delivery / shipping terms — FOB destination vs. origin,nd who bears in-transit risk and shipping cost.
+- Bid Allows Deviations: Whether the bid permits deviations, exceptions to specification, substitutions, alternates, or ''or-equal'' products.                                      - Piggyback Provision: A piggyback / cooperative-purchasing / intergovernmentalties buy off this contract at the same pricing.
+- Manufacturer Price Increase Letter: A requirement to provide a manufacturer''s price-increase letter or documentary proof before passing through a price increase.                - Authorized Distributor Letter: A requirement to provide a letter proving authorized-dealer status from the manufacturer.
+- Doing Business Data Form: An administrative vendor-registration or ''doing business'' data / information form to be completed by the vendor.                                      - EDGAR Certifications: A certification referencing EDGAR or SEC securities file.
+- Administrative Fee Commitments: A commitment to pay an administrative fee (often a percentage of sales) to a GPO, cooperative, or contracting entity.                             - Rebate Commitments: A commitment to pay rebates or volume/growth incentives b
+- Transaction Fee Commitments: A commitment to pay a per-transaction or per-order fee (e.g. to an e-procurement or marketplace platform).                                           - E-Verify: A requirement to participate in E-Verify or otherwise verify employs.
+- Affirmative Action Plan: An affirmative-action, equal-employment-opportunity (EEO), or OFCCP compliance obligation or plan requirement.                                           - Royalty Fees: A requirement to pay royalties or royalty fees on sales under t
+- Marketing Fees: A requirement to pay marketing fees, promotional allowances, or marketing contributions.                                                                          - Political Contributions: A disclosure of political or campaign contributions,ation.
+- Insurance Requirements: Minimum insurance / coverage requirements — commercial general liability, workers'' compensation, umbrella, or a certificate of insurance the vendor must carry.
+- Tax Exemption / Withholding: Tax-related provisions — sales-tax exemption, tax withholding, W-9 / tax-ID submission.'
+  )
+) AS extracted;

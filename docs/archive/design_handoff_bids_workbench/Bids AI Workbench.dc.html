@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0;background:#f5f7f6;color:#14211e;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif}
+*{box-sizing:border-box}
+button{font-family:inherit}
+a{color:#1f4d43}
+a:hover{color:#2f6f62}
+input,select{font-family:inherit}
+</style>
+</helmet>
+<div style="display:flex;height:100vh;overflow:hidden;background:#f5f7f6">
+
+  <div style="{{ sidebarStyle }}">
+    <div style="{{ brandRowStyle }}">
+      <button onClick="{{ toggleSidebar }}" title="{{ collapseTitle }}" style="{{ brandMarkStyle }}" style-hover="opacity:.85">BA</button>
+      <sc-if value="{{ sidebarOpen }}" hint-placeholder-val="{{ true }}">
+      <span style="font-size:13.5px;font-weight:600;color:#fff;line-height:1.2">Bids AI</span>
+      </sc-if>
+      <sc-if value="{{ sidebarOpen }}" hint-placeholder-val="{{ true }}">
+      <button onClick="{{ toggleSidebar }}" title="Collapse sidebar" style="margin-left:auto;background:rgba(255,255,255,.08);border:none;color:rgba(255,255,255,.8);border-radius:6px;width:26px;height:26px;cursor:pointer;font-size:14px;line-height:1;flex:none" style-hover="background:rgba(255,255,255,.16);color:#fff">«</button>
+      </sc-if>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:3px">
+      <button onClick="{{ goWizard }}" style="{{ navWizard }}" style-hover="background:rgba(255,255,255,.1)">
+        <span style="display:inline-flex;align-items:center;justify-content:center;flex:none">
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 15.5 7.5 11l2.5 2.5L16.5 7"></path><path d="M12.5 7h4v4"></path></svg>
+        </span><sc-if value="{{ sidebarOpen }}" hint-placeholder-val="{{ true }}"><span style="margin-left:10px">Workbench</span></sc-if></button>
+      <button onClick="{{ goAllBids }}" style="{{ navAllBids }}" style-hover="background:rgba(255,255,255,.1)">
+        <span style="display:inline-flex;align-items:center;justify-content:center;flex:none">
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="14" height="4" rx="1"></rect><rect x="3" y="12" width="14" height="4" rx="1"></rect></svg>
+        </span><sc-if value="{{ sidebarOpen }}" hint-placeholder-val="{{ true }}"><span style="margin-left:10px">All Bids</span></sc-if></button>
+      <button onClick="{{ goMatrix }}" style="{{ navMatrix }}" style-hover="background:rgba(255,255,255,.1)">
+        <span style="display:inline-flex;align-items:center;justify-content:center;flex:none">
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="14" height="14" rx="1.5"></rect><path d="M3 8.5h14M3 13h14M8.5 3v14"></path></svg>
+        </span><sc-if value="{{ sidebarOpen }}" hint-placeholder-val="{{ true }}"><span style="margin-left:10px">Matrix</span></sc-if></button>
+    </div>
+
+    <sc-if value="{{ sidebarOpen }}" hint-placeholder-val="{{ true }}">
+    <div style="margin-top:22px;padding:10px;border-radius:8px;background:rgba(255,255,255,.07)">
+      <div style="font-family:ui-monospace,Menlo,monospace;font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:8px">Reviewer queue</div>
+      <button onClick="{{ scopeAll }}" style="{{ scopeBtnAll }}">All teams · 11</button>
+      <button onClick="{{ scopeLegal }}" style="{{ scopeBtnLegal }}">Corporate Legal · 5</button>
+      <button onClick="{{ scopeBusiness }}" style="{{ scopeBtnBusiness }}">Business · 5</button>
+      <button onClick="{{ scopeCompliance }}" style="{{ scopeBtnCompliance }}">Compliance · 1</button>
+    </div>
+    </sc-if>
+
+    <button onClick="{{ goWizard }}" style="{{ newBidStyle }}" title="New bid" style-hover="background:#f2f6f4">
+      <span style="display:inline-flex;align-items:center;justify-content:center;flex:none">
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="M10 4v12M4 10h12"></path></svg>
+      </span><sc-if value="{{ sidebarOpen }}" hint-placeholder-val="{{ true }}"><span style="margin-left:8px">New bid</span></sc-if>
+    </button>
+    <div style="position:relative">
+      <button onClick="{{ toggleUserMenu }}" style="{{ profileRowStyle }}" style-hover="background:rgba(255,255,255,.08)">
+        <span style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:#fff;color:#1f4d43;font-weight:700;font-size:12px;flex:none">P</span>
+        <sc-if value="{{ sidebarOpen }}" hint-placeholder-val="{{ true }}">
+        <span style="display:flex;flex-direction:column;line-height:1.25;text-align:left;min-width:0">
+          <span style="font-size:12.5px;font-weight:600;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Pavan Naidu</span>
+          <span style="font-size:10px;color:rgba(255,255,255,.6)">Bids team · Reviewer</span>
+        </span>
+        <span style="margin-left:auto;font-size:8px;color:rgba(255,255,255,.6);flex:none">▲</span>
+        </sc-if>
+      </button>
+      <sc-if value="{{ userMenuOpen }}" hint-placeholder-val="{{ false }}">
+        <div style="position:absolute;bottom:calc(100% + 8px);left:0;z-index:60;width:280px;background:#fff;border:1px solid #d8dfdc;border-radius:10px;box-shadow:0 10px 26px rgba(20,33,30,.22);padding:12px 13px">
+          <div style="font-family:ui-monospace,Menlo,monospace;font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:#7e8c87">Signed in as</div>
+          <div style="font-size:12.5px;font-weight:600;color:#14211e;margin-top:3px;word-break:break-word">pavan.naidu@databricks.com</div>
+          <div style="height:1px;background:#eef2f0;margin:11px 0"></div>
+          <div style="font-family:ui-monospace,Menlo,monospace;font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:#7e8c87;margin-bottom:7px">Settings</div>
+          <label style="display:block;font-size:11.5px;font-weight:600;color:#4b5c57;margin-bottom:4px">Default extraction method</label>
+          <select value="{{ extractMethod }}" onChange="{{ onExtractMethod }}" style="width:100%;padding:6px 8px;border:1px solid #d8dfdc;border-radius:6px;font-size:12px;font-family:inherit;background:#fff;color:#14211e;cursor:pointer">
+            <option value="ai_extract">ai_extract</option>
+            <option value="ai_query">ai_query</option>
+          </select>
+          <div style="font-size:10.5px;color:#7e8c87;line-height:1.45;margin-top:5px">{{ extractHelp }}</div>
+          <label style="display:block;font-size:11.5px;font-weight:600;color:#4b5c57;margin:11px 0 4px">Match sensitivity</label>
+          <select value="{{ sensitivity }}" onChange="{{ onSensitivity }}" style="width:100%;padding:6px 8px;border:1px solid #d8dfdc;border-radius:6px;font-size:12px;font-family:inherit;background:#fff;color:#14211e;cursor:pointer">
+            <option value="Aggressive">Aggressive</option>
+            <option value="Balanced">Balanced (default)</option>
+            <option value="Conservative">Conservative</option>
+          </select>
+          <div style="font-size:10.5px;color:#7e8c87;line-height:1.45;margin-top:5px">{{ sensitivityHelp }}</div>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+
+  <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+
+    <sc-if value="{{ isWizard }}" hint-placeholder-val="{{ true }}">
+    <div style="flex:none;background:#fff;border-bottom:1px solid #d8dfdc">
+      <div style="display:flex;align-items:center;gap:14px;padding:10px 18px 8px">
+        <div style="min-width:0">
+          <div style="display:flex;align-items:baseline;gap:8px">
+            <span style="font-family:Georgia,serif;font-size:19px;line-height:1.1">{{ bidName }}</span>
+            <span style="font-family:ui-monospace,Menlo,monospace;font-size:10.5px;color:#7e8c87;background:#eef2f0;border-radius:4px;padding:2px 5px">{{ bidId }}</span>
+          </div>
+          <div style="font-size:11.5px;color:#7e8c87;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Defense Logistics Agency – Troop Support (Medical) · Due 2026-08-14</div>
+        </div>
+        <div style="margin-left:auto;display:flex;align-items:center;gap:8px">
+          <button onClick="{{ primaryAction }}" style="background:#2f6f62;color:#fff;border:none;border-radius:6px;padding:7px 14px;font-size:12.5px;font-weight:600;cursor:pointer" style-hover="background:#1f4d43">{{ primaryLabel }}</button>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:stretch;gap:0;padding:0 18px;overflow-x:auto">
+        <sc-for list="{{ steps }}" as="s" hint-placeholder-count="5">
+          <button onClick="{{ s.onClick }}" style="{{ s.style }}">
+            <span style="display:flex;align-items:center;gap:7px">
+              <span style="{{ s.dot }}">{{ s.mark }}</span>
+              <span style="font-family:ui-monospace,Menlo,monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase">{{ s.label }}</span>
+            </span>
+          </button>
+        </sc-for>
+      </div>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ isList }}" hint-placeholder-val="{{ false }}">
+      <div style="flex:none;background:#fff;border-bottom:1px solid #d8dfdc;padding:12px 18px">
+        <div style="font-family:Georgia,serif;font-size:19px;line-height:1.1">{{ listTitle }}</div>
+        <div style="font-size:11.5px;color:#7e8c87;margin-top:3px">{{ listSub }}</div>
+      </div>
+    </sc-if>
+
+    <div style="flex:1;display:flex;min-height:0">
+
+
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+        <div style="flex:1;overflow:auto;padding:14px 18px 18px">
+
+          <sc-if value="{{ isRequirements }}" hint-placeholder-val="{{ true }}">
+            <div style="overflow-x:auto">
+              <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px">
+                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-width:0">
+                  <span style="font-family:Georgia,serif;font-size:16px;white-space:nowrap;flex:none">Requirements &amp; routing</span>
+                  <button onClick="{{ toggleMaterial }}" style="font-family:ui-monospace,Menlo,monospace;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;flex:none;color:#8a5620;background:#f7e6d2;border:1px solid #c97c2e;border-radius:999px;padding:3px 9px;cursor:pointer;display:inline-flex;align-items:center;gap:6px" style-hover="background:#f2d9bc">Material · needs review <span style="{{ materialCaret }}">▾</span></button>
+                  <span style="flex:1 1 100%;font-size:11.5px;color:#7e8c87">{{ reqScopeNote }}</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:6px;margin-left:auto">
+                  <button style="background:#fff;border:1px solid #d8dfdc;color:#4b5c57;border-radius:6px;padding:4px 10px;font-size:11.5px;cursor:pointer;margin-right:4px" style-hover="border-color:#bcd6cf;color:#14211e" title="Re-run requirement extraction">Re-extract</button>
+                  <sc-for list="{{ reqFilters }}" as="f" hint-placeholder-count="4">
+                    <button onClick="{{ f.onClick }}" style="{{ f.style }}">{{ f.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+
+              <sc-if value="{{ materialOpen }}" hint-placeholder-val="{{ false }}">
+                <div style="background:#f7e6d2;border:1px solid #c97c2e;border-radius:10px;padding:11px 13px;margin-bottom:10px">
+                  <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap">
+                    <span style="font-size:13px;font-weight:700;color:#8a5620">Material — needs review</span>
+                    <span style="margin-left:auto;font-size:12px;font-weight:600;color:#8a5620">Route to: Business, Corporate Legal, Compliance</span>
+                  </div>
+                  <div style="font-size:12px;color:#8a5620;margin-top:3px">6 trigger clauses present; route to Business, Corporate Legal, Compliance for review.</div>
+                  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:9px">
+                    <sc-for list="{{ materialFlags }}" as="fl" hint-placeholder-count="6">
+                      <button onClick="{{ fl.onClick }}" style="background:#c97c2e;color:#fff;border:none;border-radius:999px;padding:4px 11px;font-size:11.5px;font-weight:600;cursor:pointer;white-space:nowrap" style-hover="background:#a8641f">{{ fl.term }}</button>
+                    </sc-for>
+                  </div>
+                  <div style="font-size:11px;color:#7e8c87;font-style:italic;margin-top:9px;line-height:1.45">Triage routing per the BRD review process (trigger-clause presence) — a routing signal, distinct from the automated per-clause risk levels below.</div>
+                </div>
+              </sc-if>
+              <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;min-width:900px;padding:9px 12px;background:#fff;border:1px solid #d8dfdc;border-radius:10px 10px 0 0;border-bottom:none">
+                <div style="display:flex;align-items:center;gap:8px;min-width:190px">
+                  <span style="font-family:ui-monospace,Menlo,monospace;font-size:11px;font-weight:700;color:#14211e">{{ reqApproved }} / {{ reqTotal }}</span>
+                  <span style="font-size:11.5px;color:#4b5c57">approved</span>
+                </div>
+                <div style="flex:1;height:6px;background:#eef2f0;border-radius:999px;overflow:hidden;max-width:320px">
+                  <div style="{{ reqBar }}"></div>
+                </div>
+                <div style="display:flex;align-items:center;gap:12px;font-size:11.5px;color:#4b5c57">
+                  <span style="display:inline-flex;align-items:center;gap:5px"><span style="width:7px;height:7px;border-radius:50%;background:#b5533c;display:inline-block"></span>5 high</span>
+                  <span style="display:inline-flex;align-items:center;gap:5px"><span style="width:7px;height:7px;border-radius:50%;background:#c97c2e;display:inline-block"></span>5 medium</span>
+                  <span style="display:inline-flex;align-items:center;gap:5px"><span style="width:7px;height:7px;border-radius:50%;background:#d8dfdc;display:inline-block"></span>1 low</span>
+                </div>
+                <div style="margin-left:auto;display:flex;align-items:center;gap:7px">
+                  <span style="font-size:11.5px;color:#7e8c87">{{ selCount }} selected</span>
+                  <button onClick="{{ approveSelected }}" style="background:#2f6f62;color:#fff;border:none;border-radius:6px;padding:5px 11px;font-size:11.5px;font-weight:600;cursor:pointer" style-hover="background:#1f4d43">Approve selected</button>
+                  <button onClick="{{ routeSelected }}" style="background:#fff;border:1px solid #d8dfdc;color:#4b5c57;border-radius:6px;padding:5px 11px;font-size:11.5px;cursor:pointer" style-hover="border-color:#bcd6cf">Reassign team</button>
+                </div>
+              </div>
+
+              <div style="display:grid;grid-template-columns:34px 178px minmax(200px,1fr) 130px 84px 106px;gap:0;min-width:900px;padding:7px 12px;background:#eef2f0;border:1px solid #d8dfdc;font-family:ui-monospace,Menlo,monospace;font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;color:#7e8c87">
+                <span><input type="checkbox" checked="{{ allSelected }}" onChange="{{ toggleAll }}" style="margin:0;accent-color:#2f6f62"></span>
+                <span>Term</span><span>Clause</span><span>Team</span><span>Risk</span><span>Status</span>
+              </div>
+
+              <sc-for list="{{ reqRows }}" as="r" hint-placeholder-count="11">
+                <div style="{{ r.wrapStyle }}">
+                  <div onClick="{{ r.onExpand }}" style="{{ r.rowStyle }}" style-hover="background:#f5f7f6">
+                    <span><input type="checkbox" checked="{{ r.selected }}" onChange="{{ r.onSelect }}" onClick="{{ stop }}" style="margin:0;accent-color:#2f6f62"></span>
+                    <span style="display:flex;align-items:center;gap:6px;min-width:0;padding-right:10px">
+                      <span style="{{ r.riskDot }}"></span>
+                      <span style="font-size:12.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ r.term }}</span>
+                    </span>
+                    <span style="{{ r.clauseStyle }}">{{ r.clause }}</span>
+                    <span style="font-size:11.5px;color:#4b5c57;padding-right:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ r.team }}</span>
+                    <span style="{{ r.riskPill }}">{{ r.risk }}</span>
+                    <span style="{{ r.statusPill }}">{{ r.status }}</span>
+                  </div>
+                  <sc-if value="{{ r.expanded }}" hint-placeholder-val="{{ false }}">
+                    <div style="padding:2px 12px 14px 46px;background:#fff;border-bottom:1px solid #d8dfdc;display:grid;grid-template-columns:minmax(280px,1fr) 300px;gap:18px;min-width:900px">
+                      <div>
+                        <p style="margin:0 0 8px;font-size:12.5px;line-height:1.55;color:#14211e;max-width:74ch">{{ r.clause }}</p>
+                        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                          <span style="font-family:ui-monospace,Menlo,monospace;font-size:9.5px;font-weight:700;text-transform:uppercase;background:#dceae6;color:#1f4d43;border-radius:4px;padding:2px 6px">AI classified</span>
+                          <span style="font-size:11px;color:#7e8c87">Page {{ r.page }} · confidence {{ r.conf }}%</span>
+                          <button style="background:#fff;border:1px solid #d8dfdc;color:#4b5c57;border-radius:5px;padding:3px 8px;font-size:11px;cursor:pointer">Edit clause</button>
+                        </div>
+                        <p style="margin:8px 0 0;font-size:11.5px;color:#7e8c87;line-height:1.5">{{ r.why }}</p>
+                      </div>
+                      <div style="display:flex;flex-direction:column;gap:8px">
+                        <div>
+                          <div style="font-family:ui-monospace,Menlo,monospace;font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;color:#7e8c87;margin-bottom:4px">Review note</div>
+                          <input type="text" placeholder="Add a review note…" style="width:100%;padding:6px 8px;border:1px solid #d8dfdc;border-radius:5px;font-size:12px;background:#fff;color:#14211e">
+                        </div>
+                        <div style="display:flex;gap:6px">
+                          <button onClick="{{ r.onApprove }}" style="background:#2f6f62;color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer" style-hover="background:#1f4d43">Approve</button>
+                          <button style="background:#fff;border:1px solid #d8dfdc;color:#8a5620;border-radius:6px;padding:6px 12px;font-size:12px;cursor:pointer">Needs changes</button>
+                          <button style="background:#fff;border:1px solid #e3c2b8;color:#b5533c;border-radius:6px;padding:6px 12px;font-size:12px;cursor:pointer">Reject</button>
+                        </div>
+                      </div>
+                    </div>
+                  </sc-if>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isLines }}" hint-placeholder-val="{{ false }}">
+            <div>
+              <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px">
+                <span style="font-family:Georgia,serif;font-size:16px">Extracted line items</span>
+                <span style="font-size:11.5px;color:#7e8c87">{{ lineCountNote }}</span>
+                <span style="display:flex;align-items:center;gap:7px;margin-left:auto">
+                  <label style="font-size:11.5px;color:#4b5c57;white-space:nowrap">Restrict matches to manufacturer</label>
+                  <span style="position:relative;display:inline-flex;flex:none">
+                    <button onClick="{{ toggleMfr }}" style="{{ mfrBtnStyle }}" style-hover="border-color:#bcd6cf">
+                      <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ mfrLabel }}</span>
+                      <span style="margin-left:auto;font-size:8px;color:#7e8c87;flex:none">▼</span>
+                    </button>
+                    <sc-if value="{{ mfrOpen }}" hint-placeholder-val="{{ false }}">
+                      <span style="position:absolute;top:32px;right:0;z-index:40;width:210px;background:#fff;border:1px solid #d8dfdc;border-radius:8px;box-shadow:0 8px 22px rgba(20,33,30,.16);padding:5px;display:flex;flex-direction:column;max-height:280px;overflow:auto">
+                        <button onClick="{{ clearMfr }}" style="text-align:left;background:none;border:none;border-bottom:1px solid #eef2f0;border-radius:5px;padding:6px 8px;font-size:11.5px;color:#1f4d43;cursor:pointer;margin-bottom:3px" style-hover="background:#eef2f0">All manufacturers</button>
+                        <sc-for list="{{ mfrOptions }}" as="m" hint-placeholder-count="9">
+                          <label style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:5px;cursor:pointer;font-size:12px" style-hover="background:#eef2f0">
+                            <input type="checkbox" checked="{{ m.checked }}" onChange="{{ m.onToggle }}" style="margin:0;accent-color:#2f6f62">{{ m.name }}
+                          </label>
+                        </sc-for>
+                      </span>
+                    </sc-if>
+                  </span>
+                </span>
+                <button style="background:#fff;border:1px solid #d8dfdc;color:#4b5c57;border-radius:6px;padding:5px 11px;font-size:11.5px;cursor:pointer" style-hover="border-color:#bcd6cf;color:#14211e" title="Re-run line-item extraction">Re-extract</button>
+                <button onClick="{{ addLine }}" style="background:#fff;border:1px solid #d8dfdc;color:#4b5c57;border-radius:6px;padding:5px 11px;font-size:11.5px;cursor:pointer" style-hover="border-color:#bcd6cf;color:#14211e">+ Add line</button>
+              </div>
+              <div style="display:grid;grid-template-columns:62px minmax(240px,1fr) 80px 70px 110px 58px;min-width:840px;padding:7px 12px;background:#eef2f0;border:1px solid #d8dfdc;border-radius:10px 10px 0 0;font-family:ui-monospace,Menlo,monospace;font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;color:#7e8c87">
+                <span>#</span><span>Description</span><span>Qty</span><span>UOM</span><span>Code given</span><span style="text-align:right">Actions</span>
+              </div>
+              <sc-for list="{{ lineRows }}" as="l" hint-placeholder-count="16">
+                <div style="display:grid;grid-template-columns:62px minmax(240px,1fr) 80px 70px 110px 58px;min-width:840px;align-items:center;padding:6px 12px;background:#fff;border:1px solid #d8dfdc;border-top:none" style-hover="background:#f5f7f6">
+                  <span style="position:relative;display:flex;align-items:center;gap:5px">
+                    <span style="font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#7e8c87">{{ l.n }}</span>
+                    <span style="position:relative;display:inline-flex" style-hover="z-index:20">
+                      <button onMouseEnter="{{ l.onHover }}" onMouseLeave="{{ l.onLeave }}" style="background:none;border:none;padding:0;cursor:help;color:#a8b3af;display:inline-flex" style-hover="color:#1f4d43">
+                        <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="10" cy="10" r="7.2"></circle><path d="M10 9v4.5" stroke-linecap="round"></path><circle cx="10" cy="6.6" r=".9" fill="currentColor" stroke="none"></circle></svg>
+                      </button>
+                      <sc-if value="{{ l.showProv }}" hint-placeholder-val="{{ false }}">
+                        <span style="position:absolute;top:20px;left:-6px;z-index:30;width:250px;background:#fff;border:1px solid #d8dfdc;border-radius:8px;box-shadow:0 6px 18px rgba(20,33,30,.14);padding:9px 10px;display:flex;gap:8px;align-items:flex-start">
+                          <svg width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="#7e8c87" stroke-width="1.5" stroke-linejoin="round" style="flex:none;margin-top:1px" aria-hidden="true"><path d="M12 2.5H5.5A1.5 1.5 0 0 0 4 4v12a1.5 1.5 0 0 0 1.5 1.5h9A1.5 1.5 0 0 0 16 16V6.5z"></path><path d="M12 2.5V6.5H16"></path></svg>
+                          <span style="min-width:0">
+                            <span style="display:block;font-size:11.5px;font-weight:600;color:#1f4d43;line-height:1.35;word-break:break-word">{{ l.srcDoc }}</span>
+                            <span style="display:flex;align-items:center;gap:6px;margin-top:5px">
+                              <span style="font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#4b5c57">Page {{ l.page }}</span>
+                              <span style="font-family:ui-monospace,Menlo,monospace;font-size:9px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;background:#eef2f0;color:#4b5c57;border-radius:4px;padding:2px 5px">AI extract</span>
+                            </span>
+                          </span>
+                        </span>
+                      </sc-if>
+                    </span>
+                  </span>
+                  <input type="text" value="{{ l.desc }}" onChange="{{ l.onDesc }}" style="width:100%;font-size:12.5px;font-family:inherit;color:#14211e;padding:5px 7px;border:1px solid transparent;border-radius:5px;background:transparent" style-hover="border-color:#d8dfdc;background:#fff" style-focus="border-color:#2f6f62;background:#fff;outline:none">
+                  <input type="text" value="{{ l.qty }}" onChange="{{ l.onQty }}" style="width:100%;font-family:ui-monospace,Menlo,monospace;font-size:12px;font-variant-numeric:tabular-nums;color:#14211e;padding:5px 7px;border:1px solid transparent;border-radius:5px;background:transparent" style-hover="border-color:#d8dfdc;background:#fff" style-focus="border-color:#2f6f62;background:#fff;outline:none">
+                  <input type="text" value="{{ l.uom }}" onChange="{{ l.onUom }}" style="width:100%;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#4b5c57;padding:5px 7px;border:1px solid transparent;border-radius:5px;background:transparent" style-hover="border-color:#d8dfdc;background:#fff" style-focus="border-color:#2f6f62;background:#fff;outline:none">
+                  <input type="text" value="{{ l.code }}" placeholder="—" onChange="{{ l.onCode }}" style="width:100%;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#4b5c57;padding:5px 7px;border:1px solid transparent;border-radius:5px;background:transparent" style-hover="border-color:#d8dfdc;background:#fff" style-focus="border-color:#2f6f62;background:#fff;outline:none">
+                  <span style="display:flex;justify-content:flex-end">
+                    <button onClick="{{ l.onDelete }}" title="Delete line" style="background:none;border:1px solid transparent;border-radius:5px;color:#7e8c87;cursor:pointer;padding:4px 6px;display:inline-flex;align-items:center" style-hover="border-color:#e3c2b8;background:#f5e1dc;color:#b5533c">
+                      <svg width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h12M8 6V4.5A1 1 0 0 1 9 3.5h2a1 1 0 0 1 1 1V6M6.5 6l.6 9a1 1 0 0 0 1 1h3.8a1 1 0 0 0 1-1l.6-9M9 9v5M11 9v5"></path></svg>
+                    </button>
+                  </span>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isMatch }}" hint-placeholder-val="{{ false }}">
+            <div>
+              <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px">
+                <span style="font-family:Georgia,serif;font-size:16px">Match &amp; price</span>
+                <span style="font-size:11.5px;color:#7e8c87">{{ matchNote }}</span>
+                <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-width:0;margin-left:auto">
+                  <sc-for list="{{ matchFilters }}" as="f" hint-placeholder-count="3">
+                    <button onClick="{{ f.onClick }}" style="{{ f.style }}">{{ f.label }}</button>
+                  </sc-for>
+                  <span style="display:flex;align-items:center;gap:6px;margin-left:4px;padding-left:10px;border-left:1px solid #d8dfdc">
+                    <label style="font-size:11.5px;color:#4b5c57;white-space:nowrap">Restrict to manufacturer</label>
+                  <span style="position:relative;display:inline-flex;flex:none">
+                    <button onClick="{{ toggleMfr }}" style="{{ mfrBtnStyle }}" style-hover="border-color:#bcd6cf">
+                      <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ mfrLabel }}</span>
+                      <span style="margin-left:auto;font-size:8px;color:#7e8c87;flex:none">▼</span>
+                    </button>
+                    <sc-if value="{{ mfrOpen }}" hint-placeholder-val="{{ false }}">
+                      <span style="position:absolute;top:32px;right:0;z-index:40;width:210px;background:#fff;border:1px solid #d8dfdc;border-radius:8px;box-shadow:0 8px 22px rgba(20,33,30,.16);padding:5px;display:flex;flex-direction:column;max-height:280px;overflow:auto">
+                        <button onClick="{{ clearMfr }}" style="text-align:left;background:none;border:none;border-bottom:1px solid #eef2f0;border-radius:5px;padding:6px 8px;font-size:11.5px;color:#1f4d43;cursor:pointer;margin-bottom:3px" style-hover="background:#eef2f0">All manufacturers</button>
+                        <sc-for list="{{ mfrOptions }}" as="m" hint-placeholder-count="9">
+                          <label style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:5px;cursor:pointer;font-size:12px" style-hover="background:#eef2f0">
+                            <input type="checkbox" checked="{{ m.checked }}" onChange="{{ m.onToggle }}" style="margin:0;accent-color:#2f6f62">{{ m.name }}
+                          </label>
+                        </sc-for>
+                      </span>
+                    </sc-if>
+                  </span>
+                  </span>
+                  <span style="position:relative;display:inline-flex">
+                    <button onClick="{{ toggleRematch }}" style="background:#fff;border:1px solid #d8dfdc;color:#4b5c57;border-radius:6px;padding:6px 11px;font-size:12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;flex:none" style-hover="border-color:#bcd6cf;color:#14211e">Re-run matching <span style="font-size:8px;color:#7e8c87">▼</span></button>
+                    <sc-if value="{{ rematchOpen }}" hint-placeholder-val="{{ false }}">
+                      <span style="position:absolute;top:34px;right:0;z-index:40;width:290px;background:#fff;border:1px solid #d8dfdc;border-radius:8px;box-shadow:0 8px 22px rgba(20,33,30,.16);padding:5px;display:flex;flex-direction:column">
+                        <button onClick="{{ rematchUnresolved }}" style="text-align:left;background:none;border:none;border-radius:6px;padding:9px 10px;cursor:pointer;color:#14211e" style-hover="background:#eef2f0">
+                          <span style="display:block;font-size:12.5px;font-weight:600">Re-match unresolved only</span>
+                          <span style="display:block;font-size:11.5px;color:#7e8c87;margin-top:2px;line-height:1.4">Keeps your accepted / no-catalog-match picks.</span>
+                        </button>
+                        <button onClick="{{ rematchAll }}" style="text-align:left;background:none;border:none;border-radius:6px;padding:9px 10px;cursor:pointer;color:#b5533c" style-hover="background:#f5e1dc">
+                          <span style="display:block;font-size:12.5px;font-weight:600">Re-match all (discard my picks)</span>
+                          <span style="display:block;font-size:11.5px;color:#7e8c87;margin-top:2px;line-height:1.4">Clears every candidate and selection, re-matches from scratch.</span>
+                        </button>
+                      </span>
+                    </sc-if>
+                  </span>
+                  <button onClick="{{ acceptConfident }}" style="background:#fff;border:1px solid #d8dfdc;color:#4b5c57;border-radius:6px;padding:6px 11px;font-size:12px;cursor:pointer;white-space:nowrap;flex:none" style-hover="border-color:#bcd6cf;color:#14211e">{{ acceptLabel }}</button>
+                </div>
+              </div>
+              <div style="display:grid;grid-template-columns:34px minmax(240px,1fr) 230px 116px 84px 100px;min-width:1000px;padding:7px 12px;background:#eef2f0;border:1px solid #d8dfdc;border-radius:10px 10px 0 0;font-family:ui-monospace,Menlo,monospace;font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;color:#7e8c87">
+                <span>#</span><span>Requested line</span><span>Selected match</span><span>Confidence</span><span>Price</span><span>State</span>
+              </div>
+              <sc-for list="{{ matchRows }}" as="m" hint-placeholder-count="16">
+                <div style="{{ m.wrapStyle }}">
+                  <div onClick="{{ m.onExpand }}" style="{{ m.rowStyle }}" style-hover="background:#f5f7f6">
+                    <span style="font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#7e8c87">{{ m.n }}</span>
+                    <span style="min-width:0;padding-right:14px">
+                      <span style="display:block;font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ m.desc }}</span>
+                      <span style="display:block;font-size:11px;color:#7e8c87;margin-top:2px">Qty {{ m.qty }} {{ m.uom }}</span>
+                    </span>
+                    <span style="min-width:0;padding-right:12px">
+                      <span style="display:block;font-family:ui-monospace,Menlo,monospace;font-size:11.5px;font-weight:700;color:#1f4d43">{{ m.code }}</span>
+                      <span style="display:block;font-size:11px;color:#4b5c57;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ m.matchName }}</span>
+                    </span>
+                    <span>
+                      <span style="position:relative;display:block;width:100px;height:16px;background:#eef2f0;border-radius:4px;overflow:hidden">
+                        <span style="{{ m.confFill }}"></span>
+                        <span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:flex-end;padding-right:5px;font-family:ui-monospace,Menlo,monospace;font-size:10px;font-weight:700;color:#14211e">{{ m.conf }}%</span>
+                      </span>
+                    </span>
+                    <span style="font-family:ui-monospace,Menlo,monospace;font-size:12px;font-variant-numeric:tabular-nums">{{ m.price }}</span>
+                    <span style="{{ m.statePill }}">{{ m.state }}</span>
+                  </div>
+                  <sc-if value="{{ m.expanded }}" hint-placeholder-val="{{ false }}">
+                    <div style="padding:4px 12px 14px 46px;background:#fff;border-bottom:1px solid #d8dfdc;min-width:1000px">
+                      <sc-if value="{{ m.guarded }}" hint-placeholder-val="{{ false }}">
+                        <div style="padding:8px 10px;border-radius:6px;background:#f7e6d2;border:1px solid #c97c2e;margin-bottom:10px">
+                          <strong style="font-size:12px;color:#8a5620">No confident catalog match — reviewer decision required.</strong>
+                          <div style="font-size:11.5px;color:#8a5620;margin-top:2px">Top semantic score 74%; Balanced requires 70% and a unit-of-measure check that this candidate fails.</div>
+                        </div>
+                      </sc-if>
+                      <sc-for list="{{ m.candidates }}" as="c" hint-placeholder-count="3">
+                        <div style="{{ c.style }}" style-hover="background:#eef2f0">
+                          <span style="{{ c.radio }}"></span>
+                          <span style="min-width:0">
+                            <span style="display:flex;align-items:center;gap:7px">
+                              <span style="{{ c.badge }}">{{ c.source }}</span>
+                              <span style="font-family:ui-monospace,Menlo,monospace;font-size:11.5px;font-weight:700;color:#1f4d43">{{ c.code }}</span>
+                              <span style="font-size:11px;color:#7e8c87">{{ c.mfr }}</span>
+                            </span>
+                            <span style="display:block;font-size:12px;margin-top:2px">{{ c.name }}</span>
+                            <span style="display:block;font-size:11px;color:#4b5c57;margin-top:2px">{{ c.note }}</span>
+                          </span>
+                          <span style="margin-left:auto;text-align:right;flex:none;width:118px">
+                            <span style="display:block;font-size:9.5px;letter-spacing:.04em;text-transform:uppercase;color:#4b5c57;margin-bottom:3px">{{ c.scoreLabel }}</span>
+                            <span style="position:relative;display:block;width:118px;height:18px;background:#eef2f0;border-radius:4px;overflow:hidden">
+                              <span style="{{ c.fill }}"></span>
+                              <span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:flex-end;padding-right:5px;font-family:ui-monospace,Menlo,monospace;font-size:10.5px;font-weight:700;color:#14211e">{{ c.score }}%</span>
+                            </span>
+                          </span>
+                        </div>
+                      </sc-for>
+                      <div style="display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap">
+                        <button style="background:#fff;border:1px solid #d8dfdc;color:#4b5c57;border-radius:6px;padding:5px 10px;font-size:11.5px;cursor:pointer">Search catalog →</button>
+                        <button style="background:#fff;border:1px solid #d8dfdc;color:#4b5c57;border-radius:6px;padding:5px 10px;font-size:11.5px;cursor:pointer">No catalog match</button>
+                        <span style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:#4b5c57">Proposed price <input type="text" value="{{ m.price }}" style="width:78px;padding:4px 6px;border:1px solid #d8dfdc;border-radius:5px;font-family:ui-monospace,Menlo,monospace;font-size:12px"></span>
+                        <span style="font-size:11px;color:#7e8c87">{{ m.priceNote }}</span>
+                        <button onClick="{{ m.onAccept }}" style="margin-left:auto;background:#2f6f62;color:#fff;border:none;border-radius:6px;padding:6px 13px;font-size:12px;font-weight:600;cursor:pointer" style-hover="background:#1f4d43">Accept &amp; next</button>
+                      </div>
+                    </div>
+                  </sc-if>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isUpload }}" hint-placeholder-val="{{ false }}">
+            <div style="display:grid;grid-template-columns:minmax(320px,420px) minmax(320px,1fr);gap:18px;align-items:start">
+              <div style="background:#fff;border:1px solid #d8dfdc;border-radius:10px;padding:14px 16px">
+                <div style="font-family:Georgia,serif;font-size:16px;margin-bottom:12px">Bid details</div>
+                <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px">
+                  <label style="font-size:11.5px;font-weight:600;color:#4b5c57">Bid name (optional)</label>
+                  <input type="text" value="DLA - 0727" placeholder="e.g. VA Medical Center — Q3 renewal" style="padding:7px 9px;border:1px solid #d8dfdc;border-radius:6px;font-size:12.5px;background:#fff;color:#14211e">
+                </div>
+                <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px">
+                  <span style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+                    <label style="font-size:11.5px;font-weight:600;color:#4b5c57">Bidding on behalf of</label>
+                    <button style="background:#fff;border:1px solid #d8dfdc;color:#4b5c57;border-radius:5px;padding:3px 8px;font-size:11px;cursor:pointer" style-hover="border-color:#bcd6cf;color:#14211e">+ New account</button>
+                  </span>
+                  <select style="padding:7px 9px;border:1px solid #d8dfdc;border-radius:6px;font-size:12.5px;background:#fff;color:#14211e">
+                    <option>Defense Logistics Agency – Troop Support (Medical)</option>
+                    <option>VA Medical Center - Region 4</option>
+                    <option>Bureau of Prisons - Central Region</option>
+                    <option>City of Baltimore Health Department</option>
+                  </select>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:5px">
+                  <label style="font-size:11.5px;font-weight:600;color:#4b5c57">Submission deadline</label>
+                  <input type="date" value="2026-08-14" style="padding:7px 9px;border:1px solid #d8dfdc;border-radius:6px;font-size:12.5px;font-family:ui-monospace,Menlo,monospace;background:#fff;color:#14211e">
+                </div>
+                <div style="margin-top:14px;padding-top:12px;border-top:1px dashed #d8dfdc;font-size:11.5px;color:#7e8c87;line-height:1.5">Extraction starts when you continue. Requirements land first, line items follow — you can start reviewing clauses while items are still parsing.</div>
+              </div>
+
+              <div style="display:flex;flex-direction:column;gap:12px">
+                <div style="background:#fff;border:1px solid #d8dfdc;border-radius:10px;padding:14px 16px">
+                  <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+                    <span style="font-family:Georgia,serif;font-size:16px">Documents</span>
+                    <span style="font-size:11.5px;color:#7e8c87">{{ docCountLabel }}</span>
+                    <button onClick="{{ addDoc }}" style="margin-left:auto;background:#fff;border:1px solid #d8dfdc;color:#4b5c57;border-radius:6px;padding:5px 11px;font-size:11.5px;cursor:pointer" style-hover="border-color:#bcd6cf;color:#14211e">+ Add document</button>
+                  </div>
+                  <div onClick="{{ addDoc }}" style="border:1.5px dashed #bcd6cf;border-radius:10px;padding:18px;text-align:center;cursor:pointer;background:#f5f7f6" style-hover="background:#dceae6;border-color:#2f6f62">
+                    <div style="font-size:12.5px;color:#4b5c57">Drag &amp; drop bid documents here</div>
+                    <div style="font-size:11px;color:#7e8c87;margin-top:3px">PDF, DOCX, XLSX · multiple files per bid</div>
+                  </div>
+                  <sc-for list="{{ docs }}" as="d" hint-placeholder-count="1">
+                    <div onClick="{{ d.onSelect }}" style="{{ d.style }}" style-hover="border-color:#bcd6cf">
+                      <span style="font-family:ui-monospace,Menlo,monospace;font-size:9.5px;font-weight:700;text-transform:uppercase;background:#eef2f0;color:#4b5c57;border-radius:4px;padding:2px 5px;flex:none">{{ d.ext }}</span>
+                      <span style="font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ d.name }}</span>
+                      <span style="margin-left:auto;font-size:11px;color:#7e8c87;flex:none">{{ d.meta }}</span>
+                      <button onClick="{{ d.onRemove }}" style="background:none;border:none;color:#7e8c87;font-size:13px;cursor:pointer;padding:0 3px;flex:none" style-hover="color:#b5533c">✕</button>
+                    </div>
+                  </sc-for>
+                </div>
+
+                <div style="background:#fff;border:1px solid #d8dfdc;border-radius:10px;padding:14px 16px">
+                  <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+                    <span style="font-family:Georgia,serif;font-size:16px">Or load a sample solicitation</span>
+                    <span style="font-size:11.5px;color:#7e8c87">6 government bid letters seeded in the Volume</span>
+                  </div>
+                  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:9px">
+                    <sc-for list="{{ samples }}" as="s" hint-placeholder-count="6">
+                      <button onClick="{{ s.onClick }}" style="{{ s.style }}" style-hover="border-color:#bcd6cf;background:#dceae6">
+                        <span style="display:inline-block;font-family:ui-monospace,Menlo,monospace;font-size:9.5px;font-weight:700;text-transform:uppercase;background:#eef2f0;color:#4b5c57;border-radius:4px;padding:2px 5px;margin-bottom:6px">{{ s.ext }}</span>
+                        <span style="display:block;font-size:12px;font-weight:600;line-height:1.35">{{ s.title }}</span>
+                        <span style="display:block;font-size:11px;color:#7e8c87;margin-top:3px">{{ s.agency }}</span>
+                      </button>
+                    </sc-for>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isGenerate }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start">
+              <div style="flex:1 1 460px;min-width:0;background:#fff;border:1px solid #d8dfdc;border-radius:10px;overflow:hidden">
+                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 14px;border-bottom:1px solid #d8dfdc;background:#eef2f0">
+                  <span style="font-family:ui-monospace,Menlo,monospace;font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#7e8c87">Generated proposal</span>
+                  <span style="font-size:11px;color:#7e8c87">{{ genStamp }}</span>
+                  <span style="display:flex;gap:6px;margin-left:auto">
+                    <button style="background:#fff;border:1px solid #d8dfdc;color:#4b5c57;border-radius:6px;padding:5px 10px;font-size:11.5px;cursor:pointer;white-space:nowrap" style-hover="border-color:#bcd6cf;color:#14211e">Download XLSX</button>
+                    <button style="background:#fff;border:1px solid #d8dfdc;color:#4b5c57;border-radius:6px;padding:5px 10px;font-size:11.5px;cursor:pointer;white-space:nowrap" style-hover="border-color:#bcd6cf;color:#14211e">Download PDF</button>
+                    <button onClick="{{ generate }}" style="background:#2f6f62;color:#fff;border:none;border-radius:6px;padding:5px 11px;font-size:11.5px;font-weight:600;cursor:pointer;white-space:nowrap" style-hover="background:#1f4d43">Regenerate</button>
+                  </span>
+                </div>
+                <div style="padding:22px 26px;font-family:Georgia,serif;overflow-x:auto">
+                  <div style="font-size:17px">Price proposal — DLA - 0727</div>
+                  <div style="font-size:11.5px;color:#7e8c87;margin-top:3px;font-family:-apple-system,system-ui,sans-serif">Defense Logistics Agency – Troop Support (Medical) · Solicitation DLA-TS-MED-2027-0231 · Submitted by Bids AI · Due 2026-08-14</div>
+                  <div style="display:grid;grid-template-columns:34px 84px minmax(180px,1.3fr) 46px 46px 66px minmax(150px,1fr);min-width:620px;gap:10px;padding:7px 0;margin-top:16px;border-top:1px solid #14211e;border-bottom:1px solid #d8dfdc;font-family:ui-monospace,Menlo,monospace;font-size:9px;letter-spacing:.05em;text-transform:uppercase;color:#7e8c87">
+                    <span>Line</span><span>Item</span><span>Product</span><span style="text-align:right">Qty</span><span>UOM</span><span style="text-align:right">Price</span><span>Requested product</span>
+                  </div>
+                  <sc-for list="{{ proposalRows }}" as="p" hint-placeholder-count="16">
+                    <div style="display:grid;grid-template-columns:34px 84px minmax(180px,1.3fr) 46px 46px 66px minmax(150px,1fr);min-width:620px;gap:10px;padding:7px 0;border-bottom:1px solid #eef2f0;align-items:baseline">
+                      <span style="font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#7e8c87">{{ p.n }}</span>
+                      <span style="font-family:ui-monospace,Menlo,monospace;font-size:10.5px;color:#1f4d43">{{ p.code }}</span>
+                      <span style="font-size:11.5px;line-height:1.4;font-family:-apple-system,system-ui,sans-serif">{{ p.name }}</span>
+                      <span style="font-family:ui-monospace,Menlo,monospace;font-size:11px;text-align:right;font-variant-numeric:tabular-nums">{{ p.qty }}</span>
+                      <span style="font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#4b5c57">{{ p.uom }}</span>
+                      <span style="font-family:ui-monospace,Menlo,monospace;font-size:11px;text-align:right;font-weight:700;font-variant-numeric:tabular-nums">{{ p.unit }}</span>
+                      <span style="font-size:11px;line-height:1.4;color:#7e8c87;font-family:-apple-system,system-ui,sans-serif">{{ p.requested }}</span>
+                    </div>
+                  </sc-for>
+                  <div style="display:flex;align-items:baseline;gap:14px;padding:10px 0 0;border-top:1px solid #14211e;margin-top:2px">
+                    <span style="font-size:12px;font-family:-apple-system,system-ui,sans-serif;color:#4b5c57">Total bid value</span>
+                    <span style="margin-left:auto;font-family:ui-monospace,Menlo,monospace;font-size:15px;font-weight:700;font-variant-numeric:tabular-nums">{{ proposalTotal }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div style="flex:1 1 220px;min-width:200px;max-width:280px;display:flex;flex-direction:column;gap:12px">
+                <div style="background:#fff;border:1px solid #d8dfdc;border-radius:10px;padding:12px 14px">
+                  <div style="font-family:ui-monospace,Menlo,monospace;font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;color:#7e8c87;margin-bottom:9px">Summary</div>
+                  <div style="display:flex;flex-direction:column;gap:7px">
+                    <span style="display:flex;align-items:baseline;gap:8px"><span style="font-size:12px;color:#4b5c57">Lines priced</span><span style="margin-left:auto;font-family:ui-monospace,Menlo,monospace;font-size:12.5px;font-weight:700">{{ reviewedCount }} / 16</span></span>
+                    <span style="display:flex;align-items:baseline;gap:8px"><span style="font-size:12px;color:#4b5c57">Requirements approved</span><span style="margin-left:auto;font-family:ui-monospace,Menlo,monospace;font-size:12.5px;font-weight:700">{{ reqApproved }} / {{ reqTotal }}</span></span>
+                    <span style="display:flex;align-items:baseline;gap:8px"><span style="font-size:12px;color:#4b5c57">Total bid value</span><span style="margin-left:auto;font-family:ui-monospace,Menlo,monospace;font-size:12.5px;font-weight:700">{{ proposalTotal }}</span></span>
+                  </div>
+                </div>
+                <div style="background:#fff;border:1px solid #d8dfdc;border-radius:10px;padding:12px 14px">
+                  <div style="font-family:ui-monospace,Menlo,monospace;font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;color:#7e8c87;margin-bottom:9px">Before you submit</div>
+                  <sc-for list="{{ openItems }}" as="c" hint-placeholder-count="2">
+                    <div style="display:flex;align-items:center;gap:8px;padding:5px 0">
+                      <span style="{{ c.icon }}">{{ c.mark }}</span>
+                      <span style="font-size:12px;min-width:0">{{ c.label }}</span>
+                      <button onClick="{{ c.onFix }}" style="{{ c.action }}">Fix →</button>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isAllBids }}" hint-placeholder-val="{{ false }}">
+            <div style="overflow-x:auto">
+              <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px">
+                <input type="text" placeholder="Search bid name, ID, file, customer…" style="flex:1;max-width:340px;padding:6px 9px;border:1px solid #d8dfdc;border-radius:6px;font-size:12px;background:#fff">
+                <div style="display:flex;gap:6px">
+                  <sc-for list="{{ bidFilters }}" as="f" hint-placeholder-count="5">
+                    <button onClick="{{ f.onClick }}" style="{{ f.style }}">{{ f.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="display:grid;grid-template-columns:minmax(240px,1fr) 210px 110px 80px 110px 140px;min-width:940px;padding:7px 12px;background:#eef2f0;border:1px solid #d8dfdc;border-radius:10px 10px 0 0;font-family:ui-monospace,Menlo,monospace;font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;color:#7e8c87">
+                <span>Bid</span><span>Customer</span><span>Stage</span><span>Lines</span><span>Due</span><span>Review progress</span>
+              </div>
+              <sc-for list="{{ bidRows }}" as="b" hint-placeholder-count="10">
+                <div style="display:grid;grid-template-columns:minmax(240px,1fr) 210px 110px 80px 110px 140px;min-width:940px;align-items:center;padding:9px 12px;background:#fff;border:1px solid #d8dfdc;border-top:none;cursor:pointer" style-hover="background:#f5f7f6">
+                  <span style="min-width:0;padding-right:14px">
+                    <span style="display:block;font-size:12.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ b.name }}</span>
+                    <span style="display:block;font-family:ui-monospace,Menlo,monospace;font-size:10.5px;color:#7e8c87;margin-top:2px">{{ b.id }}</span>
+                  </span>
+                  <span style="font-size:11.5px;color:#4b5c57;padding-right:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ b.customer }}</span>
+                  <span style="{{ b.pill }}">{{ b.stage }}</span>
+                  <span style="font-family:ui-monospace,Menlo,monospace;font-size:12px;font-variant-numeric:tabular-nums">{{ b.lines }}</span>
+                  <span style="{{ b.dueStyle }}">{{ b.due }}</span>
+                  <span style="display:flex;align-items:center;gap:7px">
+                    <span style="flex:1;height:6px;background:#eef2f0;border-radius:999px;overflow:hidden"><span style="{{ b.fill }}"></span></span>
+                    <span style="font-family:ui-monospace,Menlo,monospace;font-size:10.5px;color:#7e8c87">{{ b.pct }}%</span>
+                  </span>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isMatrix }}" hint-placeholder-val="{{ false }}">
+            <div>
+              <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px">
+                <span style="font-size:11.5px;color:#7e8c87">34 terms · 8 owning teams · edits change how future bids route</span>
+                <input type="text" placeholder="Filter terms…" style="margin-left:auto;width:220px;padding:6px 9px;border:1px solid #d8dfdc;border-radius:6px;font-size:12px;background:#fff">
+                <button style="background:#fff;border:1px solid #d8dfdc;color:#4b5c57;border-radius:6px;padding:5px 11px;font-size:11.5px;cursor:pointer">+ Add term</button>
+              </div>
+              <div style="display:grid;grid-template-columns:200px minmax(260px,1fr) 200px 90px 78px;min-width:900px;padding:7px 12px;background:#eef2f0;border:1px solid #d8dfdc;border-radius:10px 10px 0 0;font-family:ui-monospace,Menlo,monospace;font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;color:#7e8c87">
+                <span>Term</span><span>Description (used by the classifier)</span><span>Owning team(s)</span><span>Default risk</span><span style="text-align:center">Material trigger</span>
+              </div>
+              <sc-for list="{{ matrixRows }}" as="t" hint-placeholder-count="12">
+                <div style="display:grid;grid-template-columns:200px minmax(260px,1fr) 200px 90px 78px;min-width:900px;align-items:center;padding:8px 12px;background:#fff;border:1px solid #d8dfdc;border-top:none" style-hover="background:#f5f7f6">
+                  <span style="font-size:12.5px;font-weight:600;padding-right:12px">{{ t.term }}</span>
+                  <span style="font-size:11.5px;color:#4b5c57;line-height:1.45;padding-right:14px">{{ t.desc }}</span>
+                  <span style="position:relative;padding-right:10px">
+                    <button onClick="{{ t.onToggleTeams }}" style="{{ t.teamsBtn }}" style-hover="border-color:#bcd6cf">
+                      <span style="display:flex;gap:4px;flex-wrap:wrap;min-width:0">
+                        <sc-for list="{{ t.teams }}" as="tm" hint-placeholder-count="1">
+                          <span style="font-size:10.5px;font-weight:600;background:#dceae6;color:#1f4d43;border-radius:999px;padding:2px 7px;white-space:nowrap">{{ tm }}</span>
+                        </sc-for>
+                      </span>
+                      <span style="margin-left:auto;font-size:8px;color:#7e8c87;flex:none">▼</span>
+                    </button>
+                    <sc-if value="{{ t.teamsOpen }}" hint-placeholder-val="{{ false }}">
+                      <span style="position:absolute;top:32px;left:0;z-index:40;width:210px;background:#fff;border:1px solid #d8dfdc;border-radius:8px;box-shadow:0 8px 22px rgba(20,33,30,.16);padding:5px;display:flex;flex-direction:column">
+                        <sc-for list="{{ t.teamOptions }}" as="o" hint-placeholder-count="8">
+                          <label style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:5px;cursor:pointer;font-size:12px" style-hover="background:#eef2f0">
+                            <input type="checkbox" checked="{{ o.checked }}" onChange="{{ o.onToggle }}" style="margin:0;accent-color:#2f6f62">{{ o.name }}
+                          </label>
+                        </sc-for>
+                      </span>
+                    </sc-if>
+                  </span>
+                  <span style="padding-right:10px">
+                    <select value="{{ t.risk }}" onChange="{{ t.onRisk }}" style="{{ t.riskSelect }}">
+                      <option value="high">high</option>
+                      <option value="medium">medium</option>
+                      <option value="low">low</option>
+                    </select>
+                  </span>
+                  <span style="display:flex;justify-content:center">
+                    <input type="checkbox" checked="{{ t.trigger }}" onChange="{{ t.onTrigger }}" title="Material trigger" style="margin:0;width:15px;height:15px;accent-color:#2f6f62;cursor:pointer">
+                  </span>
+                </div>
+              </sc-for>
+                  </span>
+                  <span style="{{ t.riskPill }}">{{ t.risk }}</span>
+                  <span style="{{ t.trigger }}">{{ t.triggerMark }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+
+        </div>
+
+      <sc-if value="{{ docPaneVisible }}" hint-placeholder-val="{{ true }}">
+        <div style="width:400px;flex:none;border-left:1px solid #d8dfdc;background:#fff;display:flex;flex-direction:column;min-height:0">
+          <div style="flex:none;display:flex;align-items:stretch;gap:0;border-bottom:1px solid #d8dfdc;background:#eef2f0;overflow-x:auto">
+            <sc-for list="{{ docTabs }}" as="t" hint-placeholder-count="1">
+              <button onClick="{{ t.onSelect }}" title="{{ t.name }}" style="{{ t.style }}">
+                <span style="font-family:ui-monospace,Menlo,monospace;font-size:8.5px;font-weight:700;background:#eef2f0;color:#4b5c57;border-radius:3px;padding:1px 4px;flex:none">{{ t.ext }}</span>
+                <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px">{{ t.short }}</span>
+              </button>
+            </sc-for>
+            <span style="flex:1;min-width:8px;border-bottom:1px solid #d8dfdc"></span>
+          </div>
+          <div style="flex:none;display:flex;align-items:center;gap:8px;padding:7px 12px;border-bottom:1px solid #d8dfdc">
+            <span style="font-size:11.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#4b5c57">{{ activeDocName }}</span>
+            <span style="margin-left:auto;display:flex;align-items:center;gap:5px;font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#7e8c87"><button style="background:#fff;border:1px solid #d8dfdc;border-radius:4px;color:#4b5c57;font-size:10px;padding:1px 5px;cursor:pointer">←</button>1 / 12<button style="background:#fff;border:1px solid #d8dfdc;border-radius:4px;color:#4b5c57;font-size:10px;padding:1px 5px;cursor:pointer">→</button></span>
+            <button onClick="{{ toggleDoc }}" style="background:none;border:none;color:#7e8c87;font-size:14px;cursor:pointer;padding:0 2px">✕</button>
+          </div>
+          <div style="flex:1;overflow:auto;padding:14px;background:#f5f7f6">
+            <div style="background:#fff;border:1px solid #d8dfdc;border-radius:2px;padding:26px 24px;box-shadow:0 1px 3px rgba(20,33,30,.08);font-family:Georgia,serif">
+              <div style="text-align:center;font-size:12.5px;font-weight:700;margin-bottom:12px">Defense Logistics Agency – Troop Support (Medical)</div>
+              <div style="font-size:11px;color:#4b5c57;margin-bottom:18px;text-align:center">Medical-Surgical Consumables IDIQ Solicitation · DLA-TS-MED-2027-0231</div>
+              <div style="font-size:10.5px;line-height:1.75;color:#4b5c57">
+                <p style="margin:0 0 10px">C.4 The Contractor shall furnish all items in accordance with the schedule of supplies set forth in Attachment 1, and shall comply with all packaging, labeling, and unit-of-issue requirements stated therein.</p>
+                <p style="margin:10px 0 0">C.5 The Contractor warrants that the prices offered herein are no less favorable than those extended to any other customer purchasing like quantities under similar conditions, and that any price reduction granted to a comparable customer during the term shall be extended to the Agency.</p>
+                <p style="margin:10px 0 0">C.6 Delivery shall be FOB destination to the receiving activity identified on each order. Partial shipments are permitted only with the written consent of the Contracting Officer.</p>
+                <p style="margin:10px 0 0;color:#7e8c87">C.7 Inspection and acceptance shall occur at destination by an authorized Government representative within ten (10) calendar days of receipt.</p>
+              </div>
+            </div>
+          </div>
+          <div style="flex:none;padding:8px 12px;border-top:1px solid #d8dfdc;display:flex;align-items:center;gap:8px">
+            <span style="font-size:11px;color:#7e8c87">{{ docFooterNote }}</span>
+            <button style="margin-left:auto;background:#fff;border:1px solid #d8dfdc;color:#4b5c57;border-radius:5px;padding:4px 9px;font-size:11px;cursor:pointer">Open full document</button>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ docRailVisible }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ toggleDoc }}" style="width:38px;flex:none;border:none;border-left:1px solid #d8dfdc;background:#fff;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:10px;padding:12px 0;color:#4b5c57" style-hover="background:#dceae6;color:#1f4d43">
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.5H5.5A1.5 1.5 0 0 0 4 4v12a1.5 1.5 0 0 0 1.5 1.5h9A1.5 1.5 0 0 0 16 16V6.5z"></path><path d="M12 2.5V6.5H16"></path></svg>
+          <span style="writing-mode:vertical-rl;font-family:ui-monospace,Menlo,monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase">Document</span>
+        </button>
+      </sc-if>
+
+    </div>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;docPaneDefault&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Layout&quot;},&quot;scope&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;all&quot;,&quot;Corporate Legal&quot;,&quot;Business&quot;,&quot;Compliance&quot;],&quot;default&quot;:&quot;all&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Reviewer&quot;},&quot;autoAcceptThreshold&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:80,&quot;max&quot;:100,&quot;step&quot;:1,&quot;default&quot;:95,&quot;unit&quot;:&quot;%&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Matching&quot;}}">
+const CLAUSES = [
+  ["Marketing Fees","medium","Compliance","Any marketing, promotional, or advertising allowance associated with this contract shall be disclosed and shall comply with applicable fair-market-value requirements.","Marketing-fee arrangements require compliance review under fair-market-value rules.",4,96],
+  ["Most Favored Nation","high","Business","If the Contractor reduces its prices to any comparable customer during the contract term, the same reduction shall be extended to the Agency retroactively to the effective date.","MFN / best-price clauses bind pricing across the whole book of business — major commercial risk.",5,99],
+  ["Anti-Lobbying","medium","Corporate Legal","Pursuant to 31 U.S.C. 1352, the Contractor certifies that no federally appropriated funds have been paid or will be paid to influence any federal officer in connection with the award of this contract.","Anti-lobbying certifications (e.g. Byrd Amendment) require a formal legal attestation.",6,98],
+  ["Administrative Fee Commitments","medium","Business","The Contractor agrees to remit a quarterly administrative fee equal to one percent (1%) of net sales under any resulting contract.","Administrative-fee commitments reduce net realized margin.",5,97],
+  ["Litigation","high","Corporate Legal","The Contractor shall disclose any pending or threatened litigation, administrative proceeding, or investigation that could materially affect its ability to perform.","Disclosure of pending litigation must be verified by counsel before certifying.",7,95],
+  ["Most Favored Nation","high","Business","The Contractor warrants that the prices offered herein are no less favorable than those extended to any other customer purchasing like quantities under similar conditions.","MFN / best-price clauses bind pricing across the whole book of business — major commercial risk.",5,94],
+  ["Anti-Trust Violations","high","Corporate Legal","The Contractor certifies that its bid was arrived at independently and without collusion, and that it has not violated any federal or state anti-trust laws.","Anti-trust / non-collusion certifications carry criminal and civil exposure.",7,99],
+  ["Tax Exemption / Withholding","low","Tax","The Agency is exempt from federal excise and state sales tax; the Contractor shall not include such taxes in its pricing and shall accept the Agency's tax-exemption certificate.","Tax-exemption and withholding provisions are owned by Tax.",8,92],
+  ["IP Infringement","high","Corporate Legal","The Contractor warrants that the goods furnished do not infringe any patent, copyright, or trademark, and shall defend and indemnify the Government against any claim of infringement arising from their use.","IP infringement warranties can create open-ended defense obligations.",8,96],
+  ["Warranty of Products","medium","Business, Corporate Legal","The Contractor warrants that all products furnished are new, of merchantable quality, and free from defects in material and workmanship for the manufacturer's warranty period.","Product warranty scope drives replacement/return obligations and legal warranty exposure.",9,97],
+  ["Firm Pricing","medium","Business","All unit prices shall remain firm and fixed for the twelve (12) month base period of the contract and shall not be subject to escalation.","Firm-pricing periods transfer cost-inflation risk to the vendor for the locked term.",9,98],
+];
+
+const LINES = [
+  ["ASTM level 3 fluid-resistant surg mask, 50/BX",80,"BX","SKU-100893","Halyard FluidShield ASTM level 3 fluid-resistant surgical mask, ear loop, 50/BX",100,"9.72","Last priced by this customer 2026-04-08 · list price $10.27"],
+  ["Regular N95 part resp, foldable, 8 BX/CS",60,"BX","SKU-100636","3M Aura Regular N95 particulate respirator, foldable, 8 BX/CS",100,"28.71","Average of 4 historical wins for this line · list price $30.15"],
+  ["Large disp vaginal specula, 24/BX",100,"BX","—","No confident catalog match — reviewer decision required",74,"—","Unpriced until a product is selected"],
+  ["ASTM level 1 proc face mask, ear loop, 100 BX/CS",80,"BX","SKU-100892","Halyard ProShield ASTM level 1 procedure face mask, ear loop, 100 BX/CS",100,"6.32","Last priced by this customer 2026-03-19 · list price $6.74"],
+  ["Medium proph paste with fluoride, unit dose cups, 200/BX",25,"BX","SKU-100860","Premier Enamel Pro Medium prophy paste with fluoride, unit dose cups, 200/BX",100,"29.74","Average of 3 historical wins · list price $33.05"],
+  ["2in paper surg tape, hypoallergenic, 12 rolls/BX",40,"BX","SKU-100656","3M Micropore 2in paper surgical tape, hypoallergenic, 12 rolls/BX",100,"14.56","Last priced by this customer 2026-02-11 · list price $15.40"],
+  ["Cherry 20% benzocaine topical anesthetic gel, 1 jar",5,"EA","SKU-100683","Patterson Benzocaine cherry 20% benzocaine topical anesthetic gel, 1 jar",100,"6.22","Average of 7 historical wins · list price $7.05"],
+  ["enzymatic instrument pre-cleaner conc, 1 gal",25,"EA","SKU-100718","Certol ProEZ enzymatic instrument pre-cleaner concentrate, 1 gal",96,"32.23","Last priced by this customer 2026-01-30 · list price $34.90"],
+  ["XL vinyl exam gloves, powder-free, latex-free, 10 BX/CS",50,"BX","SKU-100630","Cardinal Health Flexal XL vinyl exam gloves, powder-free, latex-free, 10 BX/CS",100,"5.15","Average of 9 historical wins · list price $5.62"],
+  ["2x2in woven gauze sponges, non-sterile, 200/BX",250,"BX","SKU-100645","Medline Caring 2x2in woven gauze sponges, non-sterile, 200/BX",100,"4.95","Average of 6 historical wins · list price $5.28"],
+  ["surface disinfectant wipes, germicidal, bleach-free, 150 ct/CN",25,"CN","SKU-100704","PDI Sani-Cloth surface disinfectant wipes, germicidal, bleach-free, 160 ct/CN",88,"6.37","Average of 5 historical wins · list price $7.10"],
+  ["IV admin set, needle-free connector, 50/CS",250,"CS","SKU-100601","ICU Medical Clearlink IV admin set, needle-free connector, 50/CS",100,"66.38","Average of 2 historical wins · list price $71.20"],
+  ["disp saliva ejector, clear, 100/BX",25,"BX","SKU-100719","Crosstex disposable saliva ejector, clear, 100/BX",100,"4.15","Average of 8 historical wins · list price $4.48"],
+  ["L nitrile exam gloves, powder-free, textured fingertips, 100/BX",100,"BX","SKU-100629","Kimberly-Clark KC300 L nitrile exam gloves, powder-free, textured fingertips, 100/BX",100,"9.94","Last priced by this customer 2026-05-02 · list price $10.60"],
+  ["non-sterile cotton rolls, medium, 200/BG",200,"BG","SKU-100716","Richmond Dental non-sterile cotton rolls, medium, 200/BG",96,"22.13","Average of 4 historical wins · list price $23.80"],
+  ["ultrasonic cleaning solution conc, 1 gal",40,"EA","SKU-100717","Certol Ultra ultrasonic cleaning solution concentrate, 1 gal",100,"23.70","Average of 3 historical wins · list price $25.40"],
+];
+
+const BIDS = [
+  ["CPP 0727","bid-55c0f16ac1","CORNING-PAINTED POST AREA SCHOOL DISTRICT","Matching",103,"2026-08-26",42],
+  ["DLA - 0727","bid-ec503ae134","Defense Logistics Agency – Troop Support (Medical)","In review",16,"2026-08-14",64],
+  ["DLS","bid-af38563e71","Defense Logistics Agency – Troop Support (Medical)","In review",16,"2026-08-14",18],
+  ["VA-2027-0114_PPE_Wound_Care.pdf","bid-9428a75cfd","VA Medical Center - Region 4","In review",6,"2026-08-08",83],
+  ["Medical Supplies Bid 2026–2027 — Shaler Area","bid-7a437cb9c6","Shaler Area School District","Matching",104,"2026-08-08",7],
+  ["Health Supplies Bid #27-002 — Corning-Painted Post","bid-3747a82813","CORNING-PAINTED POST AREA SCHOOL DISTRICT","Matching",25,"2026-08-08",52],
+  ["Customer test — 277-002 bid package","bid-3500552aff","Bureau of Prisons - Central Region","Matching",103,"2026-08-07",0],
+  ["POST-EXTRACT RENAME","bid-2c350b8e79","City of Baltimore Health Department","Matching",15,"2027-06-15",96],
+  ["XLSX SAMPLE TEST","bid-246ce7134a","United Nations Procurement Division","In review",12,"2026-09-15",33],
+  ["MULTIFILE TEST","bid-8463b0ae39","Bureau of Prisons - Central Region","Submitted",1,"2026-09-01",100],
+];
+
+const MATRIX = [
+  ["Administrative Fee Commitments","A commitment to pay an administrative fee (often a percentage of net sales) to the buying organization.",["Business"],"medium",true],
+  ["Affirmative Action Plan","An affirmative-action, equal-employment-opportunity, or workforce-plan requirement.",["HR"],"low",false],
+  ["Anti-Lobbying","An anti-lobbying certification (e.g. the Byrd Amendment) covering appropriated funds.",["Corporate Legal"],"medium",false],
+  ["Anti-Trust Violations","An anti-trust or non-collusion certification — the bid was arrived at independently.",["Corporate Legal"],"high",true],
+  ["Authorized Distributor Letter","A requirement to provide a letter proving authorized-distributor status for a manufacturer.",["Business"],"low",false],
+  ["Debarment","A certification that the vendor is not debarred, suspended, or excluded from federal programs.",["Corporate Legal"],"medium",false],
+  ["Firm Pricing","A requirement that prices remain firm / fixed for a stated base period without escalation.",["Business"],"medium",false],
+  ["Indemnification","The vendor must indemnify, defend, or hold the buyer harmless against stated claims.",["Corporate Legal"],"high",true],
+  ["IP Infringement","Warranties or obligations regarding intellectual-property infringement of furnished goods.",["Corporate Legal"],"high",true],
+  ["Marketing Fees","A requirement to pay marketing fees, promotional allowances, or advertising contributions.",["Compliance"],"medium",true],
+  ["Most Favored Nation","A most-favored-nation, most-favored-customer, or best-price commitment.",["Business"],"high",true],
+  ["Warranty of Products","A product warranty — that goods are free from defects for the manufacturer's period.",["Business","Corporate Legal"],"medium",false],
+];
+
+const SAMPLES = [
+  ["Medical-Surgical Consumables IDIQ Solicitation","DLA Troop Support (Medical)","DLA-TS-MED-2027-0231_MedSurg_IDIQ.pdf","12 pages · parsed"],
+  ["PPE & Wound Care solicitation","VA Medical Center – Region 4","VA-2027-0114_PPE_Wound_Care.pdf","8 pages · parsed"],
+  ["Institutional MedSupply RFQ","Bureau of Prisons – North Central","BOP-NCR-2027-0087_Institutional_MedSupply_RFQ.pdf","13 pages · parsed"],
+  ["Correctional Health Supply Bid","Arizona Dept. of Corrections","AZ-ADCRR-2027-0456_Correctional_Health_Supply_Bid.pdf","10 pages · parsed"],
+  ["Public Health Clinics Solicitation","City of Baltimore Health Dept.","BAL-HD-2027-0192_PublicHealth_Clinics_Solicitation.pdf","9 pages · parsed"],
+  ["Area Office Med Consumables","Indian Health Service – Great Plains","IHS-GP-2027-0339_AreaOffice_MedConsumables.pdf","11 pages · parsed"],
+];
+
+const MANUFACTURERS = ["3M","Cardinal Health","Certol","Crosstex","Halyard","ICU Medical","Kimberly-Clark","Medline","PDI","Patterson","Premier","Richmond Dental"];
+
+const TEAMS = ["Business","Compliance","Corporate Affairs","Corporate Legal","HR","Risk Management","Tax","Quality"];
+
+const RISK_DOT = { high: "#b5533c", medium: "#c97c2e", low: "#d8dfdc" };
+
+class Component extends DCLogic {
+  state = {
+    screen: "wizard",
+    step: "requirements",
+    maxStep: 4,
+    docOpen: false,
+    sidebarCollapsed: false,
+    lineEdits: LINES.map((l) => l.slice()),
+    scope: "all",
+    reqFilter: "all",
+    matchFilter: "all",
+    expandedReq: null,
+    expandedMatch: 2,
+    selected: {},
+    approved: {},
+    accepted: {},
+    docs: [["DLA-TS-MED-2027-0231_MedSurg_IDIQ.pdf","PDF","12 pages · parsed"]],
+    activeDoc: 0,
+    mfrSel: [],
+    mfrOpen: false,
+    provRow: null,
+    rematchOpen: false,
+    teamsOpenRow: null,
+    materialOpen: false,
+    userMenuOpen: false,
+    extractMethod: "ai_extract",
+    sensitivity: "Balanced",
+    matrixEdits: MATRIX.map((t) => [t[0], t[1], t[2].slice(), t[3], t[4]]),
+  };
+
+  componentDidMount() {
+    if (this.props.docPaneDefault === true) this.setState({ docOpen: true });
+    if (this.props.scope) this.setState({ scope: this.props.scope });
+  }
+
+  editLine(i, field, value) {
+    const next = this.state.lineEdits.map((row) => row.slice());
+    next[i][field] = value;
+    this.setState({ lineEdits: next });
+  }
+
+  pill(bg, color, border) {
+    return `justify-self:start;font-family:ui-monospace,Menlo,monospace;font-size:9.5px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;border-radius:999px;padding:3px 8px;background:${bg};color:${color};border:1px solid ${border || "transparent"}`;
+  }
+
+  chip(active) {
+    return active
+      ? "background:#1f4d43;color:#fff;border:1px solid #1f4d43;border-radius:999px;padding:4px 11px;font-size:11.5px;cursor:pointer"
+      : "background:#fff;color:#4b5c57;border:1px solid #d8dfdc;border-radius:999px;padding:4px 11px;font-size:11.5px;cursor:pointer";
+  }
+
+  navStyle(active) {
+    const base =
+      "display:flex;align-items:center;width:100%;background:none;border:none;color:rgba(255,255,255,.8);padding:8px 9px;border-radius:6px;cursor:pointer;font-size:12.5px;text-align:left";
+    const c = this.state.sidebarCollapsed ? base + ";justify-content:center;padding:8px 0" : base;
+    return active ? c + ";background:rgba(255,255,255,.16);color:#fff;font-weight:600" : c;
+  }
+
+  scopeStyle(active) {
+    const base =
+      "display:block;width:100%;text-align:left;background:none;border:none;border-radius:5px;padding:5px 6px;font-size:11.5px;color:rgba(255,255,255,.72);cursor:pointer";
+    const c = this.state.sidebarCollapsed ? base + ";justify-content:center;padding:8px 0" : base;
+    return active ? c + ";background:rgba(255,255,255,.16);color:#fff;font-weight:600" : c;
+  }
+
+  reqsInScope() {
+    const s = this.state.scope;
+    return CLAUSES.map((c, i) => ({ c, i })).filter(
+      ({ c }) => s === "all" || c[2].indexOf(s) !== -1,
+    );
+  }
+
+  renderVals() {
+    const st = this.state;
+    const scoped = this.reqsInScope();
+    const filtered = scoped.filter(({ c, i }) => {
+      if (st.reqFilter === "high") return c[1] === "high";
+      if (st.reqFilter === "pending") return !st.approved[i];
+      if (st.reqFilter === "approved") return !!st.approved[i];
+      return true;
+    });
+    const approvedCount = Object.keys(st.approved).filter((k) => st.approved[k]).length;
+    const selCount = Object.keys(st.selected).filter((k) => st.selected[k]).length;
+    const acceptedCount = Object.keys(st.accepted).filter((k) => st.accepted[k]).length;
+    const threshold = this.props.autoAcceptThreshold ?? 95;
+    const confident = LINES.filter((l) => l[5] >= threshold).length;
+
+    const stepDefs = [
+      ["upload", "Upload", "1 document · DLA-TS-MED"],
+      ["requirements", "Requirements", `${approvedCount} of 11 approved`],
+      ["lines", "Line items", "16 extracted · 0 edited"],
+      ["match", "Match", `${acceptedCount} of 16 accepted · 1 needs decision`],
+      ["generate", "Generate", acceptedCount === 16 ? "ready" : `${16 - acceptedCount} blockers`],
+    ];
+
+    return {
+      stop: (e) => e.stopPropagation(),
+
+      goWizard: () => this.setState({ screen: "wizard" }),
+      goAllBids: () => this.setState({ screen: "allbids" }),
+      goMatrix: () => this.setState({ screen: "matrix" }),
+      navWizard: this.navStyle(st.screen === "wizard"),
+      navAllBids: this.navStyle(st.screen === "allbids"),
+      navMatrix: this.navStyle(st.screen === "matrix"),
+
+      scopeAll: () => this.setState({ scope: "all" }),
+      scopeLegal: () => this.setState({ scope: "Corporate Legal", screen: "wizard", step: "requirements" }),
+      scopeBusiness: () => this.setState({ scope: "Business", screen: "wizard", step: "requirements" }),
+      scopeCompliance: () => this.setState({ scope: "Compliance", screen: "wizard", step: "requirements" }),
+      scopeBtnAll: this.scopeStyle(st.scope === "all"),
+      scopeBtnLegal: this.scopeStyle(st.scope === "Corporate Legal"),
+      scopeBtnBusiness: this.scopeStyle(st.scope === "Business"),
+      scopeBtnCompliance: this.scopeStyle(st.scope === "Compliance"),
+
+      bidName: "DLA - 0727",
+      bidId: "bid-ec503ae134",
+      docOpen: st.docOpen,
+      isWizard: st.screen === "wizard",
+      isList: st.screen !== "wizard",
+      listTitle: st.screen === "allbids" ? "All bids" : "Compliance matrix",
+      listSub:
+        st.screen === "allbids"
+          ? "Every bid started on this app — filter, sort, or pick one up where you left off."
+          : "BRD Glossary responsibility matrix — who owns which clause types.",
+      docPaneVisible: st.docOpen && st.screen === "wizard",
+      sidebarOpen: !st.sidebarCollapsed,
+      toggleSidebar: () => this.setState({ sidebarCollapsed: !st.sidebarCollapsed }),
+      collapseTitle: st.sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar",
+      brandMarkStyle:
+        "background:#fff;color:#1f4d43;font-weight:700;border:none;border-radius:6px;padding:4px 7px;font-size:12px;font-family:ui-monospace,Menlo,monospace;flex:none;cursor:" +
+        (st.sidebarCollapsed ? "e-resize" : "w-resize"),
+      sidebarStyle:
+        "width:" + (st.sidebarCollapsed ? "62px" : "212px") +
+        ";flex:none;display:flex;flex-direction:column;background:#1f4d43;color:rgba(255,255,255,.92);padding:14px " +
+        (st.sidebarCollapsed ? "8px" : "10px"),
+      brandRowStyle:
+        "display:flex;align-items:center;gap:9px;padding:4px 6px 14px;border-bottom:1px solid rgba(255,255,255,.12);margin-bottom:12px" +
+        (st.sidebarCollapsed ? ";justify-content:center;padding-left:0;padding-right:0" : ""),
+      profileRowStyle:
+        "margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.12);display:flex;align-items:center;gap:9px;width:100%;background:none;border-left:none;border-right:none;border-bottom:none;cursor:pointer;border-radius:0 0 7px 7px;padding-bottom:6px" +
+        (st.sidebarCollapsed ? ";justify-content:center" : ""),
+      userMenuOpen: st.userMenuOpen,
+      toggleUserMenu: () => this.setState({ userMenuOpen: !st.userMenuOpen }),
+      extractMethod: st.extractMethod,
+      onExtractMethod: (e) => this.setState({ extractMethod: e.target.value }),
+      extractHelp:
+        st.extractMethod === "ai_extract"
+          ? "Structured primary path. Applies to new bids; use Re-extract on a step to change one bid."
+          : "Legacy prompt-based path — more robust on messy or scanned documents where ai_extract comes back empty.",
+      sensitivity: st.sensitivity,
+      onSensitivity: (e) => this.setState({ sensitivity: e.target.value }),
+      sensitivityHelp:
+        st.sensitivity === "Conservative"
+          ? "Minimum semantic score 0.85 — auto-matches fewer lines and sends more to manual review."
+          : st.sensitivity === "Aggressive"
+            ? "Minimum semantic score 0.55 — pre-selects more lines automatically."
+            : "Minimum semantic score 0.70. Affects automated selection and bulk-accept only; reviewers can always pick any product.",
+      newBidStyle:
+        "display:flex;align-items:center;justify-content:center;margin-top:auto;width:100%;background:#fff;color:#1f4d43;border:none;border-radius:7px;padding:9px;font-size:12.5px;font-weight:600;cursor:pointer",
+      docRailVisible: !st.docOpen && st.screen === "wizard",
+      activeDocName: (st.docs[st.activeDoc] || st.docs[0] || [""])[0],
+      docFooterNote: st.docs.length > 1 ? "Document " + (st.activeDoc + 1) + " of " + st.docs.length + " in this bid" : "1 document in this bid",
+      docTabs: st.docs.map((d, i) => ({
+        name: d[0], ext: d[1],
+        short: d[0].replace(/\.[a-z]+$/i, "").split("_")[0],
+        onSelect: () => this.setState({ activeDoc: i }),
+        style:
+          "display:flex;align-items:center;gap:6px;max-width:170px;padding:8px 11px;border:none;border-right:1px solid #d8dfdc;cursor:pointer;color:" +
+          (i === st.activeDoc ? "#14211e" : "#7e8c87") +
+          ";background:" + (i === st.activeDoc ? "#fff" : "transparent") +
+          ";border-bottom:1px solid " + (i === st.activeDoc ? "#fff" : "#d8dfdc") +
+          ";box-shadow:" + (i === st.activeDoc ? "inset 0 2px 0 #2f6f62" : "none"),
+      })),
+      toggleDoc: () => this.setState({ docOpen: !st.docOpen }),
+
+      isUpload: st.screen === "wizard" && st.step === "upload",
+      mfrOpen: st.mfrOpen,
+      toggleMfr: () => this.setState({ mfrOpen: !st.mfrOpen }),
+      clearMfr: () => this.setState({ mfrSel: [], mfrOpen: false }),
+      mfrLabel:
+        st.mfrSel.length === 0 ? "All manufacturers"
+        : st.mfrSel.length === 1 ? st.mfrSel[0]
+        : st.mfrSel.length + " manufacturers",
+      mfrBtnStyle:
+        "display:flex;align-items:center;gap:8px;min-width:170px;max-width:210px;text-align:left;background:#fff;border:1px solid " +
+        (st.mfrOpen ? "#2f6f62" : "#d8dfdc") +
+        ";border-radius:6px;padding:5px 9px;font-size:12px;color:#14211e;cursor:pointer",
+      mfrOptions: MANUFACTURERS.map((name) => ({
+        name,
+        checked: st.mfrSel.indexOf(name) !== -1,
+        onToggle: () =>
+          this.setState({
+            mfrSel: st.mfrSel.indexOf(name) !== -1 ? st.mfrSel.filter((x) => x !== name) : st.mfrSel.concat([name]),
+          }),
+      })),
+      addLine: () => this.setState({ lineEdits: st.lineEdits.concat([["", "", "", "", "", 0, "", ""]]) }),
+      docCountLabel: st.docs.length === 1 ? "1 document staged" : st.docs.length + " documents staged",
+      addDoc: () => this.setState({
+        docs: st.docs.concat([["BOP-NCR-2027-0087_Institutional_MedSupply_RFQ.pdf","PDF","13 pages · parsed"]]),
+      }),
+      docs: st.docs.map((d, i) => ({
+        name: d[0], ext: d[1], meta: d[2],
+        style:
+          "display:flex;align-items:center;gap:9px;margin-top:8px;padding:7px 9px;border:1px solid " +
+          (i === st.activeDoc ? "#2f6f62;background:#dceae6" : "#d8dfdc;background:#fff") +
+          ";border-radius:6px;cursor:pointer",
+        onSelect: () => this.setState({ activeDoc: i }),
+        onRemove: (e) => {
+          e.stopPropagation();
+          this.setState({ docs: st.docs.filter((_, j) => j !== i), activeDoc: 0 });
+        },
+      })),
+      samples: SAMPLES.map((s) => ({
+        title: s[0], agency: s[1], ext: "PDF",
+        onClick: () => this.setState({ docs: [[s[2], "PDF", s[3]]], activeDoc: 0 }),
+        style:
+          "text-align:left;border:1px solid " +
+          (st.docs[0] && st.docs[0][0] === s[2] ? "#2f6f62;background:#dceae6" : "#d8dfdc;background:#fff") +
+          ";border-radius:8px;padding:10px;cursor:pointer;color:#14211e",
+      })),
+
+      isRequirements: st.screen === "wizard" && st.step === "requirements",
+      isLines: st.screen === "wizard" && st.step === "lines",
+      isMatch: st.screen === "wizard" && st.step === "match",
+      isGenerate: st.screen === "wizard" && st.step === "generate",
+      isAllBids: st.screen === "allbids",
+      isMatrix: st.screen === "matrix",
+
+      primaryLabel:
+        st.step === "upload" ? "Continue → extract"
+        : st.step === "requirements" ? "Continue to line items →"
+        : st.step === "lines" ? "Confirm & find matches →"
+        : st.step === "match" ? "Continue to generate →"
+        : "Download proposal",
+      primaryAction: () => {
+        const order = ["upload", "requirements", "lines", "match", "generate"];
+        const i = order.indexOf(st.step);
+        const next = Math.min(i + 1, order.length - 1);
+        this.setState({ step: order[next], screen: "wizard", maxStep: Math.max(st.maxStep, next) });
+      },
+
+      steps: stepDefs.map(([id, label], idx) => {
+        const active = st.screen === "wizard" && st.step === id;
+        const reached = idx <= st.maxStep;
+        return {
+          label, meta: "",
+          mark: String(idx + 1),
+          onClick: reached ? () => this.setState({ step: id, screen: "wizard" }) : () => {},
+          style:
+            "flex:1;min-width:130px;text-align:left;background:none;border:none;border-bottom:2px solid " +
+            (active ? "#2f6f62" : "transparent") +
+            ";padding:8px 10px 9px;color:" + (active ? "#1f4d43" : reached ? "#4b5c57" : "#a8b3af") +
+            ";cursor:" + (reached ? "pointer" : "not-allowed"),
+          dot:
+            "display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;font-family:ui-monospace,Menlo,monospace;font-size:10px;font-weight:700;" +
+            (reached
+              ? "background:#2f6f62;color:#fff"
+              : "background:#eef2f0;color:#a8b3af;border:1px solid #d8dfdc") +
+            (active ? ";box-shadow:0 0 0 3px #dceae6" : ""),
+        };
+      }),
+
+      materialOpen: st.materialOpen,
+      toggleMaterial: () => this.setState({ materialOpen: !st.materialOpen }),
+      materialCaret: "display:inline-block;font-size:8px;transition:transform .12s ease;transform:rotate(" + (st.materialOpen ? "180deg" : "0deg") + ")",
+      materialFlags: ["Marketing Fees", "Most Favored Nation", "Administrative Fee Commitments", "Litigation", "Anti-Trust Violations", "IP Infringement"].map((term) => ({
+        term,
+        onClick: () => {
+          const idx = CLAUSES.findIndex((c) => c[0] === term);
+          if (idx >= 0) this.setState({ expandedReq: idx, reqFilter: "all", scope: "all" });
+        },
+      })),
+      reqScopeNote:
+        st.scope === "all"
+          ? "11 clauses · 4 teams · routed by the BRD responsibility matrix"
+          : `${scoped.length} clauses routed to ${st.scope} — your queue`,
+      reqTotal: scoped.length,
+      reqApproved: scoped.filter(({ i }) => st.approved[i]).length,
+      reqBar: `height:100%;width:${scoped.length ? Math.round((scoped.filter(({ i }) => st.approved[i]).length / scoped.length) * 100) : 0}%;background:#2f6f62`,
+      selCount,
+      allSelected: filtered.length > 0 && filtered.every(({ i }) => st.selected[i]),
+      toggleAll: () => {
+        const all = filtered.every(({ i }) => st.selected[i]);
+        const next = Object.assign({}, st.selected);
+        filtered.forEach(({ i }) => { next[i] = !all; });
+        this.setState({ selected: next });
+      },
+      approveSelected: () => {
+        const next = Object.assign({}, st.approved);
+        Object.keys(st.selected).forEach((k) => { if (st.selected[k]) next[k] = true; });
+        this.setState({ approved: next, selected: {} });
+      },
+      routeSelected: () => {},
+      reqFilters: [
+        ["all", "All"], ["pending", "Pending"], ["high", "High risk"], ["approved", "Approved"],
+      ].map(([id, label]) => ({
+        label,
+        onClick: () => this.setState({ reqFilter: id }),
+        style: this.chip(st.reqFilter === id),
+      })),
+
+      reqRows: filtered.map(({ c, i }) => {
+        const expanded = st.expandedReq === i;
+        const approved = !!st.approved[i];
+        return {
+          term: c[0], clause: c[3], team: c[2], risk: c[1], why: c[4], page: c[5], conf: c[6],
+          expanded,
+          selected: !!st.selected[i],
+          status: approved ? "Approved" : "Pending",
+          wrapStyle: "background:#fff;border-left:1px solid #d8dfdc;border-right:1px solid #d8dfdc",
+          rowStyle:
+            "display:grid;grid-template-columns:34px 178px minmax(200px,1fr) 130px 84px 106px;align-items:center;min-width:900px;padding:9px 12px;border-bottom:1px solid #eef2f0;cursor:pointer" +
+            (expanded ? ";background:#f5f7f6" : ""),
+          riskDot: `flex:none;width:7px;height:7px;border-radius:50%;background:${RISK_DOT[c[1]]}`,
+          clauseStyle:
+            "font-size:12px;color:#4b5c57;padding-right:16px;line-height:1.45;" +
+            (expanded ? "visibility:hidden" : "overflow:hidden;text-overflow:ellipsis;white-space:nowrap"),
+          riskPill:
+            c[1] === "high" ? this.pill("#f5e1dc", "#b5533c", "#e3c2b8")
+            : c[1] === "medium" ? this.pill("#f7e6d2", "#8a5620")
+            : this.pill("#eef2f0", "#7e8c87", "#d8dfdc"),
+          statusPill: approved ? this.pill("#dceae6", "#1f4d43") : this.pill("#eef2f0", "#7e8c87", "#d8dfdc"),
+          onExpand: () => this.setState({ expandedReq: expanded ? null : i }),
+          onSelect: () => {
+            const next = Object.assign({}, st.selected);
+            next[i] = !next[i];
+            this.setState({ selected: next });
+          },
+          onApprove: () => {
+            const next = Object.assign({}, st.approved);
+            next[i] = true;
+            this.setState({ approved: next, expandedReq: null });
+          },
+        };
+      }),
+
+      lineRows: (st.lineEdits.length ? st.lineEdits : LINES).map((l, i) => ({
+        n: i + 1, desc: l[0], qty: l[1], uom: l[2], code: "", page: 10 + (i % 2),
+        onDesc: (e) => this.editLine(i, 0, e.target.value),
+        onQty: (e) => this.editLine(i, 1, e.target.value),
+        onUom: (e) => this.editLine(i, 2, e.target.value),
+        onCode: () => {},
+        srcDoc: (st.docs[0] || ["—"])[0],
+        showProv: st.provRow === i,
+        onHover: () => this.setState({ provRow: i }),
+        onLeave: () => this.setState({ provRow: null }),
+        onDelete: () => this.setState({ lineEdits: st.lineEdits.filter((_, j) => j !== i) }),
+      })),
+      lineCountNote: st.lineEdits.length + " lines · " + st.lineEdits.length + " without a product code · read straight from the document",
+
+      matchNote:
+        st.matchFilter === "needs"
+          ? "1 line needs a reviewer decision"
+          : `${confident} of 16 lines matched at ${threshold}% or better · 1 guarded`,
+      matchFilters: [
+        ["all", "All 16"], ["needs", "Needs decision · 1"], ["accepted", `Accepted · ${acceptedCount}`],
+      ].map(([id, label]) => ({
+        label,
+        onClick: () => this.setState({ matchFilter: id }),
+        style: this.chip(st.matchFilter === id) + ";white-space:nowrap;flex:none",
+      })),
+      acceptLabel: "Accept matches & clear remaining (" + (16 - acceptedCount) + ") →",
+      rematchOpen: st.rematchOpen,
+      toggleRematch: () => this.setState({ rematchOpen: !st.rematchOpen }),
+      rematchUnresolved: () => this.setState({ rematchOpen: false }),
+      rematchAll: () => this.setState({ rematchOpen: false, accepted: {} }),
+      acceptConfident: () => {
+        const next = Object.assign({}, st.accepted);
+        LINES.forEach((l, i) => { if (l[5] >= threshold) next[i] = true; });
+        this.setState({ accepted: next });
+      },
+
+      matchRows: LINES.map((l, i) => ({ l, i }))
+        .filter(({ l, i }) => {
+          if (st.matchFilter === "needs") return l[5] < 80;
+          if (st.matchFilter === "accepted") return !!st.accepted[i];
+          return true;
+        })
+        .map(({ l, i }) => {
+          const expanded = st.expandedMatch === i;
+          const guarded = l[5] < 80;
+          const accepted = !!st.accepted[i];
+          return {
+            n: i + 1, desc: l[0], qty: l[1], uom: l[2], code: l[3], matchName: l[4],
+            conf: l[5], price: l[6], priceNote: l[7], guarded, expanded,
+            wrapStyle: "background:#fff;border-left:1px solid #d8dfdc;border-right:1px solid #d8dfdc" + (guarded ? ";border-left:3px solid #c97c2e" : ""),
+            rowStyle:
+              "display:grid;grid-template-columns:34px minmax(240px,1fr) 230px 116px 84px 100px;min-width:1000px;align-items:center;padding:8px 12px;border-bottom:1px solid #eef2f0;cursor:pointer" +
+              (expanded ? ";background:#f5f7f6" : ""),
+            confFill: `position:absolute;left:0;top:0;bottom:0;width:${l[5]}%;background:${guarded ? "#c97c2e" : "#bcd6cf"}`,
+            state: accepted ? "Accepted" : guarded ? "Decide" : "Suggested",
+            statePill: accepted
+              ? this.pill("#dceae6", "#1f4d43")
+              : guarded
+                ? this.pill("#f7e6d2", "#8a5620")
+                : this.pill("#eef2f0", "#7e8c87", "#d8dfdc"),
+            onExpand: () => this.setState({ expandedMatch: expanded ? null : i }),
+            onAccept: () => {
+              const next = Object.assign({}, st.accepted);
+              next[i] = true;
+              this.setState({ accepted: next, expandedMatch: null });
+            },
+            candidates: [
+              guarded
+                ? {
+                    source: "Catalog", code: "—", mfr: "", name: "No catalog candidate cleared the threshold",
+                    note: "Search the catalog, pick a history match below, or mark this line no-bid.",
+                    score: l[5], scoreLabel: "Relevance", selected: true,
+                  }
+                : {
+                    source: "Catalog", code: l[3], mfr: l[4].split(" ")[0], name: l[4],
+                    note: l[7], score: l[5], scoreLabel: "Relevance", selected: true,
+                  },
+              {
+                source: "Purchase history", code: "SKU-100651", mfr: "Halyard",
+                name: l[0].replace("ASTM level 3", "ASTM level 2") + " (alternate pack)",
+                note: "This customer bought 2026-01-14 at $" + l[6] + " for this item — won 2 of 3 bids",
+                score: Math.max(38, l[5] - 22), scoreLabel: "Relevance", selected: false,
+              },
+              {
+                source: "Catalog", code: "SKU-100640", mfr: "Medline",
+                name: "Medline equivalent — " + l[0],
+                note: "Same category, different manufacturer and unit of issue",
+                score: Math.max(24, l[5] - 41), scoreLabel: "Relevance", selected: false,
+              },
+            ].map((c) => ({
+              source: c.source, code: c.code, mfr: c.mfr, name: c.name, note: c.note,
+              score: c.score, scoreLabel: c.scoreLabel,
+              style:
+                "display:flex;align-items:flex-start;gap:10px;padding:8px 10px;border-radius:6px;cursor:pointer;border:1px solid " +
+                (c.selected ? "#c97c2e;background:#f7e6d2" : "transparent"),
+              radio:
+                "flex:none;margin-top:3px;width:12px;height:12px;border-radius:50%;border:1.5px solid " +
+                (c.selected ? "#c97c2e;background:#c97c2e;box-shadow:inset 0 0 0 2px #fff" : "#bcd6cf"),
+              badge:
+                c.source === "Catalog"
+                  ? "font-family:ui-monospace,Menlo,monospace;font-size:9px;font-weight:700;text-transform:uppercase;background:#dceae6;color:#1f4d43;border-radius:4px;padding:2px 5px"
+                  : "font-family:ui-monospace,Menlo,monospace;font-size:9px;font-weight:700;text-transform:uppercase;background:#eef2f0;color:#4b5c57;border:1px solid #d8dfdc;border-radius:4px;padding:2px 5px",
+              fill: `position:absolute;left:0;top:0;bottom:0;width:${c.score}%;background:#bcd6cf`,
+            })),
+          };
+        }),
+
+      reviewedCount: acceptedCount,
+      genStamp: "Generated 2026-08-14 10:24 · v3 · pricing from Balanced strategy",
+      generate: () => {},
+      proposalRows: LINES.map((l, i) => ({
+        n: i + 1,
+        code: l[3] === "—" ? "—" : l[3],
+        name: l[4].indexOf("No confident") === 0 ? "" : l[4],
+        unit: l[6] === "—" ? "—" : "$" + l[6],
+        qty: l[1], uom: l[2],
+        requested: l[0],
+      })),
+      proposalTotal:
+        "$" +
+        LINES.reduce((sum, l) => sum + (l[6] === "—" ? 0 : parseFloat(l[6]) * l[1]), 0)
+          .toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+      openItems: [
+        { label: "Line 3 — no catalog match", ok: false, step: "match" },
+        { label: acceptedCount === 16 ? "All lines priced" : (16 - acceptedCount) + " lines unpriced", ok: acceptedCount === 16, step: "match" },
+        { label: approvedCount === 11 ? "Requirements approved" : (11 - approvedCount) + " requirements pending", ok: approvedCount === 11, step: "requirements" },
+      ].map((c) => ({
+        label: c.label,
+        mark: c.ok ? "✓" : "!",
+        icon:
+          "flex:none;display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;border-radius:50%;font-size:10px;font-weight:700;" +
+          (c.ok ? "background:#dceae6;color:#1f4d43" : "background:#f7e6d2;color:#8a5620"),
+        action: c.ok
+          ? "display:none"
+          : "margin-left:auto;flex:none;background:#fff;border:1px solid #d8dfdc;color:#1f4d43;border-radius:5px;padding:3px 8px;font-size:11px;cursor:pointer",
+        onFix: () => this.setState({ step: c.step, expandedMatch: 2 }),
+      })),
+
+      bidFilters: [["all", "All"], ["mine", "My queue"], ["review", "In review"], ["matching", "Matching"], ["due", "Due this week"]].map(
+        ([id, label]) => ({ label, onClick: () => {}, style: this.chip(id === "all") }),
+      ),
+      bidRows: BIDS.map((b) => ({
+        name: b[0], id: b[1], customer: b[2], stage: b[3], lines: b[4], due: b[5], pct: b[6],
+        pill:
+          b[3] === "Submitted" ? this.pill("#dceae6", "#1f4d43")
+          : b[3] === "In review" ? this.pill("#f7e6d2", "#8a5620")
+          : this.pill("#eef2f0", "#7e8c87", "#d8dfdc"),
+        dueStyle:
+          "font-family:ui-monospace,Menlo,monospace;font-size:11.5px;" +
+          (b[5] < "2026-08-15" ? "color:#b5533c;font-weight:700" : "color:#4b5c57"),
+        fill: `display:block;height:100%;width:${b[6]}%;background:${b[6] === 100 ? "#2f6f62" : "#bcd6cf"}`,
+      })),
+
+      matrixRows: (st.matrixEdits.length ? st.matrixEdits : MATRIX).map((t, i) => ({
+        term: t[0], desc: t[1], teams: t[2], risk: t[3], trigger: t[4],
+        teamsOpen: st.teamsOpenRow === i,
+        onToggleTeams: () => this.setState({ teamsOpenRow: st.teamsOpenRow === i ? null : i }),
+        teamsBtn:
+          "display:flex;align-items:center;gap:6px;width:100%;text-align:left;background:#fff;border:1px solid " +
+          (st.teamsOpenRow === i ? "#2f6f62" : "#d8dfdc") +
+          ";border-radius:6px;padding:5px 8px;cursor:pointer;min-height:28px",
+        teamOptions: TEAMS.map((name) => ({
+          name,
+          checked: t[2].indexOf(name) !== -1,
+          onToggle: () => {
+            const next = st.matrixEdits.map((r) => r.slice());
+            const have = next[i][2].indexOf(name) !== -1;
+            next[i][2] = have ? next[i][2].filter((x) => x !== name) : next[i][2].concat([name]);
+            this.setState({ matrixEdits: next });
+          },
+        })),
+        riskSelect:
+          "width:100%;padding:4px 6px;border:1px solid #d8dfdc;border-radius:6px;font-size:12px;font-family:inherit;background:#fff;cursor:pointer;font-weight:600;color:" +
+          (t[3] === "high" ? "#b5533c" : t[3] === "medium" ? "#8a5620" : "#4b5c57"),
+        onRisk: (e) => {
+          const next = st.matrixEdits.map((r) => r.slice());
+          next[i][3] = e.target.value;
+          this.setState({ matrixEdits: next });
+        },
+        onTrigger: () => {
+          const next = st.matrixEdits.map((r) => r.slice());
+          next[i][4] = !next[i][4];
+          this.setState({ matrixEdits: next });
+        },
+      })),
+
+    };
+  }
+}
+
+</script>
+</body>
+</html>

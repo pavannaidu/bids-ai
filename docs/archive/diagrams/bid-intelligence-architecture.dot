@@ -1,0 +1,247 @@
+digraph BidIntelligenceArchitecture {
+  graph [
+    rankdir=LR,
+    splines=ortho,
+    nodesep=0.42,
+    ranksep=0.72,
+    pad=0.35,
+    margin=0.08,
+    bgcolor="#F9F7F4",
+    fontname="Arial",
+    label="BID INTELLIGENCE  |  GOVERNED ARCHITECTURE",
+    labelloc="t",
+    labeljust="l",
+    fontsize=24,
+    fontcolor="#1B3139"
+  ];
+
+  node [
+    shape=box,
+    style="filled,rounded",
+    color="#B8C6C8",
+    penwidth=1.1,
+    fontname="Arial",
+    fontsize=11,
+    fontcolor="#1B3139",
+    margin="0.18,0.12"
+  ];
+
+  edge [
+    color="#425A60",
+    penwidth=1.55,
+    arrowsize=0.72,
+    fontname="Arial",
+    fontsize=8.5,
+    fontcolor="#425A60"
+  ];
+
+  reviewer [
+    label="Bid reviewer\n\nNames bid · selects account ·\nreviews evidence and decisions",
+    fillcolor="#FFFFFF",
+    color="#FF3621",
+    penwidth=1.6
+  ];
+
+  bid_package [
+    label="Bid package\nPDF · Word · Excel\n\nMultiple files, one bid",
+    fillcolor="#FFF0EA",
+    color="#FF3621",
+    penwidth=1.6
+  ];
+
+  subgraph cluster_platform {
+    label="DATABRICKS DATA INTELLIGENCE PLATFORM  ·  UNITY CATALOG GOVERNANCE BOUNDARY";
+    labelloc="t";
+    labeljust="l";
+    color="#1B3139";
+    penwidth=1.6;
+    style="rounded";
+    fontname="Arial";
+    fontsize=12;
+    fontcolor="#1B3139";
+    margin=20;
+
+    volume [
+      label="Unity Catalog Volume\nGoverned file landing\n\nEach source file retained",
+      fillcolor="#FFFFFF",
+      color="#1B3139"
+    ];
+
+    parse [
+      label="ai_parse_document\nStructured parse per file\n\nPage spans · tables · citations",
+      fillcolor="#EAF3FA",
+      color="#2272B4",
+      penwidth=1.6
+    ];
+
+    question_split [
+      label="One bid package\nTwo independent questions",
+      shape=diamond,
+      width=1.45,
+      height=0.95,
+      fillcolor="#FFFFFF",
+      color="#1B3139",
+      fontsize=9.5
+    ];
+
+    subgraph cluster_product_path {
+      label="WHAT ARE THEY BUYING?  ·  PRODUCT & PRICING PATH";
+      labelloc="t";
+      labeljust="l";
+      color="#2272B4";
+      penwidth=1.35;
+      style="rounded";
+      fontname="Arial";
+      fontsize=11;
+      fontcolor="#2272B4";
+      margin=16;
+
+      line_items [
+        label="ai_extract\nLine items\n\nDescription · quantity · UOM\nSource file + page",
+        fillcolor="#EAF3FA",
+        color="#2272B4",
+        penwidth=1.45
+      ];
+
+      matching [
+        label="Mosaic AI Vector Search\nCatalog candidates\n\nManufacturer pre-filter\nDelta Sync catalog index",
+        fillcolor="#EAF3FA",
+        color="#2272B4",
+        penwidth=1.45
+      ];
+
+      pricing [
+        label="History-aware ranking & pricing\n\nPurchase / bid history context\nSemantic threshold before boost",
+        fillcolor="#EAF3FA",
+        color="#2272B4",
+        penwidth=1.45
+      ];
+
+      product_decision [
+        label="Human match & price decision\n\nAccept · override · no match\nDecision retained for audit",
+        fillcolor="#FFF0EA",
+        color="#FF3621",
+        penwidth=1.6
+      ];
+    }
+
+    subgraph cluster_governance_path {
+      label="WHAT ARE THEY DEMANDING?  ·  GOVERNANCE & ROUTING PATH";
+      labelloc="t";
+      labeljust="l";
+      color="#00A972";
+      penwidth=1.35;
+      style="rounded";
+      fontname="Arial";
+      fontsize=11;
+      fontcolor="#00A972";
+      margin=16;
+
+      requirements [
+        label="ai_extract\nTerms & clauses\n\nFull clause text\nSource file + page",
+        fillcolor="#E7F6F0",
+        color="#00A972",
+        penwidth=1.45
+      ];
+
+      classify [
+        label="ai_classify\nConstrained classification\n\nMatrix-owned term taxonomy\nOnly valid labels returned",
+        fillcolor="#E7F6F0",
+        color="#00A972",
+        penwidth=1.45
+      ];
+
+      route [
+        label="Route & materiality verdict\n\nOwning teams · risk level\nMaterial trigger clauses",
+        fillcolor="#E7F6F0",
+        color="#00A972",
+        penwidth=1.45
+      ];
+
+      clause_decision [
+        label="Human clause decision\n\nReview status · note · edit\nAttribution retained for audit",
+        fillcolor="#FFF0EA",
+        color="#FF3621",
+        penwidth=1.6
+      ];
+    }
+
+    proposal [
+      label="Generate proposal\n\nCustomer-ready PDF + XLSX\nfrom reviewed, resolved rows",
+      fillcolor="#FFF0EA",
+      color="#FF3621",
+      penwidth=1.8
+    ];
+
+    subgraph cluster_data_foundation {
+      label="GOVERNED DATA & AI FOUNDATION";
+      labelloc="t";
+      labeljust="l";
+      color="#6D8085";
+      penwidth=1.1;
+      style="rounded,dashed";
+      fontname="Arial";
+      fontsize=10;
+      fontcolor="#425A60";
+      margin=14;
+
+      catalog [
+        label="Catalog Delta tables\n\nMaster product data",
+        fillcolor="#FFFFFF",
+        color="#6D8085"
+      ];
+
+      history [
+        label="Purchase & bid history\nDelta tables\n\nCustomer context & pricing",
+        fillcolor="#FFFFFF",
+        color="#6D8085"
+      ];
+
+      matrix [
+        label="Compliance matrix\nDelta tables\n\nTerms · teams · triggers",
+        fillcolor="#FFFFFF",
+        color="#6D8085"
+      ];
+
+      lakebase [
+        label="Lakebase\nOperational bid state\n\nExtracted rows · decisions · overrides",
+        fillcolor="#FFFFFF",
+        color="#6D8085"
+      ];
+
+      serving [
+        label="Model serving endpoint\n\nBatch inference for SQL AI functions",
+        fillcolor="#FFFFFF",
+        color="#6D8085"
+      ];
+    }
+  }
+
+  submission [
+    label="Proposal delivered\n\nPDF + customer submission spreadsheet",
+    fillcolor="#FFFFFF",
+    color="#FF3621",
+    penwidth=1.6
+  ];
+
+  reviewer -> bid_package [label="upload"];
+  bid_package -> volume [label="source files"];
+  volume -> parse [label="governed access"];
+  parse -> question_split [label="structured evidence"];
+
+  question_split -> requirements [color="#00A972", penwidth=1.8];
+  question_split -> line_items [color="#2272B4", penwidth=1.8];
+
+  line_items -> matching [color="#2272B4", penwidth=1.8];
+  matching -> pricing [color="#2272B4", penwidth=1.8];
+  pricing -> product_decision [color="#2272B4", penwidth=1.8];
+
+  requirements -> classify [color="#00A972", penwidth=1.8];
+  classify -> route [color="#00A972", penwidth=1.8];
+  route -> clause_decision [color="#00A972", penwidth=1.8];
+
+  product_decision -> proposal [color="#FF3621", penwidth=1.9];
+  clause_decision -> proposal [color="#FF3621", penwidth=1.9];
+  proposal -> submission [label="approved output", color="#FF3621", penwidth=1.8];
+
+}
