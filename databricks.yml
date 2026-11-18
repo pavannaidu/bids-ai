@@ -1,0 +1,50 @@
+bundle:
+  name: bids-ai
+
+include:
+  - resources/*.yml
+
+workspace:
+  root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}
+  file_path: ${workspace.root_path}/files
+
+variables:
+  # Existing workspace resources this bundle deploys into. It never creates or deletes them.
+  catalog:
+    description: Existing Unity Catalog catalog that holds the demo's schema.
+    default: pavan_naidu_catalog
+  schema:
+    description: Existing Unity Catalog schema for the bid documents volume.
+    default: bids_ai
+  app_name:
+    description: Existing Databricks App the bundle deploys the demo to (setup binds it on first deploy).
+    default: bids-ai-demo
+  lakebase_project:
+    description: Existing Lakebase project id (Postgres 16+; enable Lakebase Search in its settings for native matching indexes).
+    default: bids-ai-demo
+  lakebase_branch:
+    description: Branch of the Lakebase project the app uses.
+    default: production
+  lakebase_database:
+    description: Database id in that branch. The app creates its `bids` and `bids_ref` schemas there.
+    default: bids-ai
+  # Created by the bundle.
+  bid_documents_volume:
+    description: Managed volume, created in the schema above, for sample bid documents, uploads and generated proposals.
+    default: bid_documents
+  model_serving_endpoint:
+    description: Foundation Model endpoint for extraction through FMAPI (method fmapi, and recovery when ai_extract returns nothing).
+    default: databricks-claude-sonnet-5-5
+  embedding_endpoint:
+    description: Embedding endpoint for catalog descriptions and search queries (1024-d; the match thresholds are calibrated to it).
+    default: databricks-gte-large-en
+  demo_owner_group:
+    description: Group that can manage bundle jobs.
+    default: users
+
+targets:
+  dev:
+    default: true
+    mode: development
+    workspace:
+      profile: FEVM

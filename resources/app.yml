@@ -1,0 +1,73 @@
+resources:
+  apps:
+    # An existing app (var.app_name): setup_demo.py binds it on first deploy and teardown_demo.py
+    # unbinds it before `bundle destroy`, so the bundle only ever updates its code and config.
+    bids_demo_app:
+      name: ${var.app_name}
+      lifecycle:
+        prevent_destroy: true
+      description: Bids AI — document intelligence workbench.
+      source_code_path: ../src/app
+      # Runtime command + env, resolved per target from the bundle's variables.
+      config:
+        command: ["python", "app.py"]
+        env:
+          - name: BIDS_CATALOG
+            value: ${var.catalog}
+          - name: BIDS_SCHEMA
+            value: ${var.schema}
+          - name: BIDS_VOLUME
+            value: ${var.bid_documents_volume}
+          # Hybrid fuses BM25 keyword matches (including product codes) with vector similarity.
+          # Set to "ann" as a deployment-level rollback switch (vector only).
+          - name: BIDS_SEARCH_MODE
+            value: hybrid
+          # Direct Foundation Model API extraction, with the JSON schema in the prompt for models
+          # that reject structured output.
+          - name: BIDS_MODEL_SERVING_ENDPOINT
+            value_from: fmapi-model
+          - name: BIDS_EMBEDDING_ENDPOINT
+            value_from: embedding-model
+          # Default extraction to REST ai_extract. The Settings pane can switch to the
+          # direct FMAPI path at runtime (process-local).
+          - name: BIDS_USE_AI_EXTRACT
+            value: "true"
+          - name: BIDS_MATCH_CONFIDENCE_THRESHOLD
+            value: "0.55"
+          # The demo's Lakebase endpoint, for minting the Postgres credential (PG* are injected too).
+          - name: LAKEBASE_ENDPOINT
+            value_from: postgres
+      resources:
+        - name: postgres
+          postgres:
+            branch: projects/${var.lakebase_project}/branches/${var.lakebase_branch}
+            database: projects/${var.lakebase_project}/branches/${var.lakebase_branch}/databases/${var.lakebase_database}
+            permission: CAN_CONNECT_AND_CREATE
+        - name: bid-documents
+          uc_securable:
+            securable_type: VOLUME
+            securable_full_name: ${var.catalog}.${var.schema}.${resources.volumes.bids_demo_documents.name}
+            permission: WRITE_VOLUME
+        - name: fmapi-model
+          serving_endpoint:
+            name: ${var.model_serving_endpoint}
+            permission: CAN_QUERY
+        - name: embedding-model
+          serving_endpoint:
+            name: ${var.embedding_endpoint}
+            permission: CAN_QUERY
+        - name: ai-parse-document
+          uc_securable:
+            securable_type: FUNCTION
+            securable_full_name: system.ai.ai_parse_document
+            permission: EXECUTE
+        - name: ai-extract
+          uc_securable:
+            securable_type: FUNCTION
+            securable_full_name: system.ai.ai_extract
+            permission: EXECUTE
+        - name: ai-classify
+          uc_securable:
+            securable_type: FUNCTION
+            securable_full_name: system.ai.ai_classify
+            permission: EXECUTE

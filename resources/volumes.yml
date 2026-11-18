@@ -1,0 +1,7 @@
+resources:
+  volumes:
+    bids_demo_documents:
+      catalog_name: ${var.catalog}
+      schema_name: ${var.schema}
+      name: ${var.bid_documents_volume}
+      volume_type: MANAGED

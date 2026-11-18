@@ -1,0 +1,25 @@
+resources:
+  jobs:
+    # Writes the sample bid documents (PDF/XLSX/DOCX) the app's "Load a sample" picker offers
+    # into the bid documents volume. The reference data is seeded by the app itself, in Lakebase.
+    seed_demo_data:
+      name: "[${bundle.target}] Bids Seed Sample Documents"
+      environments:
+        - environment_key: bootstrap_env
+          spec:
+            client: "4"
+            dependencies:
+              - reportlab==5.1.0
+              - openpyxl==3.1.5
+              - python-docx==1.2.0
+      tasks:
+        - task_key: seed_sample_documents
+          environment_key: bootstrap_env
+          spark_python_task:
+            python_file: ../src/bootstrap/seed_demo_data.py
+            parameters:
+              - --volume-path
+              - /Volumes/${var.catalog}/${var.schema}/${resources.volumes.bids_demo_documents.name}
+      permissions:
+        - level: CAN_MANAGE
+          group_name: ${var.demo_owner_group}
