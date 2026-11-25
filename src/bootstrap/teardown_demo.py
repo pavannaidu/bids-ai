@@ -86,7 +86,7 @@ def drop_app_schemas(workspace: Any, cfg: DemoConfig) -> None:
 
 
 def revoke_grants(workspace: Any, cfg: DemoConfig, principal: str) -> None:
-    from databricks.sdk.errors import NotFound
+    from databricks.sdk.errors import NotFound, PermissionDenied
     from databricks.sdk.service.catalog import PermissionsChange, Privilege
 
     for securable, name, privilege in (
@@ -98,9 +98,12 @@ def revoke_grants(workspace: Any, cfg: DemoConfig, principal: str) -> None:
                 securable_type=securable, full_name=name,
                 changes=[PermissionsChange(principal=principal, remove=[privilege])],
             )
+            print(f"Revoked the app service principal's {privilege.value.replace('_', ' ')} on {name}.")
         except NotFound:
             pass
-    print("Revoked the app service principal's USE SCHEMA and USE CATALOG.")
+        except PermissionDenied:
+            # Setup couldn't grant it here either; the app had it through `account users`.
+            pass
 
 
 def main() -> None:

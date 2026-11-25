@@ -4,7 +4,8 @@
 
 The bundle deploys into existing resources and never creates or deletes them. Provision them once
 (the commands below use the defaults from `databricks.yml`), or point the bundle variables at
-resources you already have (`--var name=value`).
+resources you already have: add a target to `databricks.yml` like `hls`, or set
+`BUNDLE_VAR_<name>=<value>` environment variables when you run the setup and teardown scripts.
 
 | Resource | Bundle variable (default) | Required configuration |
 |---|---|---|
@@ -36,7 +37,8 @@ Then enable Lakebase Search on the project (one console click, below).
   only their owner can do, so run it as the user who ran setup.
 - **Unity Catalog:** `CREATE VOLUME` on the schema, and `MANAGE` (or ownership) on the catalog and
   schema, to grant the app's service principal `USE CATALOG`, `USE SCHEMA` and access to the
-  volume.
+  volume. Without `MANAGE`, setup skips a grant the app already gets through `account users` (as
+  in the HLS demo workspace) and stops on any other.
 - **App:** `CAN_MANAGE`.
 
 **Locally:** the Databricks CLI, and Python 3.11+ with `databricks-sdk==0.156.0` and
@@ -51,6 +53,10 @@ python3 -m pip install "databricks-sdk==0.156.0" "psycopg[binary]==3.3.6"
 python3 src/bootstrap/setup_demo.py --target dev      # deploy the demo; safe to re-run
 python3 src/bootstrap/teardown_demo.py --target dev   # remove what setup created; asks to confirm (--yes skips it)
 ```
+
+The `hls` target deploys into the HLS demo workspace instead: the schema `hls_medtech.bids_ai` and
+the app `bids-ai` that the HLS Demo Gateway provisions, and a Lakebase project `bids-ai` you create
+as above. Log in with the profile name `HLS`, then run the same scripts with `--target hls`.
 
 `setup_demo.py`:
 1. Checks the prerequisites exist.

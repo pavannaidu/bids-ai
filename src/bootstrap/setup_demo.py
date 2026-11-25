@@ -17,7 +17,8 @@ Lakebase UI (project Settings > Lakebase Search).
      error is retried.
   4. Seed the sample bid documents into the volume (files overwritten in place).
   5. Grant the app's service principal USE CATALOG, USE SCHEMA, and READ and WRITE VOLUME on the
-     documents volume (again, since teardown deletes the volume). All idempotent.
+     documents volume (again, since teardown deletes the volume). All idempotent. A grant you aren't
+     allowed to make is skipped when the app already has the privilege through `account users`.
   6. Prepare the Lakebase database for the app: grant its service principal CONNECT and CREATE on
      the database (again, in case the database was recreated since the deploy first granted it),
      and create the app's `bids` and `bids_ref` schemas, owned by you, for the app to create its
@@ -86,6 +87,7 @@ def deploy_bundle(target: str) -> None:
 
 
 def grant_uc_access(workspace: Any, cfg: DemoConfig) -> None:
+    from databricks.sdk.errors import PermissionDenied
     from databricks.sdk.service.catalog import PermissionsChange, Privilege
 
     principal = workspace.apps.get(cfg.app_name).service_principal_client_id
@@ -97,12 +99,22 @@ def grant_uc_access(workspace: Any, cfg: DemoConfig) -> None:
         # app's resources; teardown deletes the volume, and the next deploy doesn't grant it again.
         ("volume", volume, [Privilege.READ_VOLUME, Privilege.WRITE_VOLUME]),
     ):
-        workspace.grants.update(
-            securable_type=securable, full_name=name,
-            changes=[PermissionsChange(principal=principal, add=privileges)],
-        )
-    print(f"Granted the app service principal USE CATALOG on {cfg.catalog}, USE SCHEMA on {cfg.schema}, "
-          f"and READ and WRITE VOLUME on {volume}.")
+        listed = ", ".join(p.value.replace("_", " ") for p in privileges)
+        try:
+            workspace.grants.update(
+                securable_type=securable, full_name=name,
+                changes=[PermissionsChange(principal=principal, add=privileges)],
+            )
+            print(f"Granted the app service principal {listed} on {name}.")
+        except PermissionDenied:
+            # In a shared catalog you may not be allowed to grant, but everyone may already have it.
+            everyone = workspace.grants.get_effective(securable, name, principal="account users")
+            held = {p.privilege for a in everyone.privilege_assignments or [] for p in a.privileges or []}
+            if not set(privileges) <= held:
+                sys.exit(f"You can't grant {listed} on {securable} {name}, and the app doesn't get it through "
+                         f"`account users`. Ask an owner of {name} to grant it to the app's service principal "
+                         f"{principal}, then re-run.")
+            print(f"The app gets {listed} on {name} through `account users`.")
 
 
 def prepare_lakebase(workspace: Any, cfg: DemoConfig) -> None:

@@ -48,3 +48,14 @@ targets:
     mode: development
     workspace:
       profile: FEVM
+
+  # The HLS demo workspace. The HLS Demo Gateway provisions the schema and the app; create the
+  # Lakebase project as in docs/setup.md. Log in once with:
+  #   databricks auth login --host <hls-demo-workspace-url> --profile HLS
+  hls:
+    workspace:
+      profile: HLS
+    variables:
+      catalog: hls_medtech
+      app_name: bids-ai
+      lakebase_project: bids-ai

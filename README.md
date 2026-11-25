@@ -55,6 +55,9 @@ python3 src/bootstrap/setup_demo.py --target dev      # deploy the demo (safe to
 python3 src/bootstrap/teardown_demo.py --target dev   # remove what setup created
 ```
 
+`--target dev` deploys to the builder's workspace and `--target hls` to the HLS demo workspace, where
+the demo already runs. For another workspace, add a target to `databricks.yml`.
+
 - [Setup and operations](docs/setup.md): prerequisites, setup and teardown, Lakebase Search, local dev
 - [Architecture](docs/architecture.md): components, data flow, how matching works
 - [Flow deck](docs/bids-ai-flow.pdf): the end-to-end flow, as slides (PDF)
